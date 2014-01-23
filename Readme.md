@@ -1,8 +1,8 @@
-#Subhy-Matlab-Basic
+# Subhy-Matlab-Basic
 
 These are Matlab functions that i use in most of my other projects. You'll need these if you want any of my code to  run.
 
-###See also
+## See also
 
 You won't find some files here.  
 You can download the following (google for "matlab <package name>"):  
