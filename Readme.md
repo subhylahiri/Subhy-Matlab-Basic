@@ -5,7 +5,7 @@ These are Matlab functions that i use in most of my other projects. You'll need 
 ## See also
 
 You won't find some files here.  
-You can download the following (google for "matlab <package name>"):  
+You can download the following (google for "matlab {package name}"):  
 * barweb  
 * catstruct  
 * cm_and_cb_utilities  
