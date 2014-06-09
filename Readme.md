@@ -10,7 +10,7 @@ You can download the following (google for "matlab {package name}"):
 * catstruct  
 * cm_and_cb_utilities  
 * freezeColors  
-* mdmp  
+* gmdmp  
 * dockf  
 
 You may also need the following functions written by Marc Gershow:
