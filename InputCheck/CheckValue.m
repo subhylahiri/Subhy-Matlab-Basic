@@ -6,7 +6,10 @@ function [ msg ] = CheckValue( variable, test, testname,varargin )
 %   if nargout=1, returns error message
 %   if nargout=0, throws error message
 
-existsAndDefault('testname',func2str(test));
+% existsAndDefault('testname',func2str(test));
+if ~exist('testname','var')
+    testname=func2str(test);
+end
 if ~ischar(testname)
     varargin=[{testname},varargin];
     testname=func2str(test);
