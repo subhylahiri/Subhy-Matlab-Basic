@@ -3,7 +3,7 @@ function FixEps( filename )
 %   replace \n with \r\n in Windows
 
 eps = fileread(filename);
-fd = fopen(f, 'wt');
+fd = fopen(filename, 'wt');
 fwrite(fd, eps);
 fclose(fd);
 
