@@ -4,12 +4,13 @@ function DispCounter( i, imax, lab )
 %   imax = maximum value of loop counter
 %   lab  = display prefix (string)
 %use DispCounter(imax+1,imax,lab) to delete final display
+%make sure you start with i=1
 
 if i>1
-    fprintf(repmat('\b',[1 numel(sprintf([lab '%d/%d '],i-1,imax))]));
+    fprintf(repmat('\b',[1 numel(sprintf([lab ' %d/%d '],i-1,imax))]));
 end
 if i<=imax
-    fprintf([lab '%d/%d '],i,imax);
+    fprintf([lab ' %d/%d '],i,imax);
 end
 
 
