@@ -10,10 +10,10 @@ endtime = [];
 varargin = assignApplicable(varargin);
 
 if (~isempty(starttime))
-    firstframe =  irobj.time2frame(starttime);
+    firstframe =  irobj.tracker.time2frame(starttime);
 end
 if (~isempty(endtime))
-    lastframe =  irobj.time2frame(endtime);
+    lastframe =  irobj.tracker.time2frame(endtime);
 end
 firstframe = max(firstframe, irobj.firstfr);
 lastframe = min(lastframe, irobj.lastfr);
@@ -25,7 +25,7 @@ axes1=axes('Parent',figure1);
 i=firstframe;
 while i<=lastframe
    im=irobj.readFrame(i);
-   imshow((im-irobj.offset)*irobj.multiplier,'Parent',axes1);
+   imshow(irobj.scaleIm(im),'Parent',axes1);
    title(irobj.frameTitle(i));
    drawnow;
    i=i+1;
@@ -34,7 +34,7 @@ end %for i
 % close(figure1)   
 
 
-    function figclose(src,event)
+    function figclose(src,~)
         lastframe=i;
         delete(src);
     end

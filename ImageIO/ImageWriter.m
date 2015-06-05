@@ -12,6 +12,25 @@ classdef ImageWriter
    end %methods: Abstract
    
    methods
+       function rgb=fig2im(obj,figh)
+           %get image from figure handle figh
+           error(CheckType(obj,'ImageWriter'));
+           f=getframe(figh);
+           [im,map] = frame2im(f);    %Return associated image data 
+           if isempty(map)            %Truecolor system
+             rgb = im;
+           else                       %Indexed system
+             rgb = ind2rgb(im,map);   %Convert image data
+           end
+       end
+       
+       function writeFig(obj,figh,framenumber)
+           im=obj.fig2im(figh);
+           obj.writeFrame(im,framenumber);
+       end
+   end
+   
+   methods
        %constructor
        function obj=ImageWriter
        end %constructor

@@ -62,19 +62,20 @@ classdef ImageReader
        %
        % display etc 
        %
+       function ims=scaleIm(irobj,im)
+           ims=(im-irobj.offset)*irobj.multiplier;
+       end
+       %
        function disp(irobj)
            % displays frames included.
            disp(['Frames: ',int2str([irobj.firstfr]),' to ',int2str([irobj.lastfr])]);
        end %disp
        %
-       function display(irobj)
-           disp(irobj);
-       end %display   
+%        function display(irobj)
+%            disp(irobj);
+%        end %display   
        %
        play(irobj,varargin)
-       time=frame2time(irobj,frame)
-       frame=time2frame(irobj,time)
-       [CM,sc]=Cam2Stage(irobj)
      end %methods
      
      methods (Access=private)
@@ -87,13 +88,13 @@ classdef ImageReader
        im=readFrame(liobj,framenumber)
    end %Abstract methods
    
-   methods (Static=true)
-       function [ h ] = loadobj( a )
-        %LOADOBJ replace tracker struct with TrackerData object
-        h=a;
-        h.tracker=TrackerData(a.tracker);
-       end
-   end
+%    methods (Static=true)
+%        function [ h ] = loadobj( a )
+%         %LOADOBJ replace tracker struct with TrackerData object
+%         h=a;
+%         h.tracker=TrackerData(a.tracker);
+%        end
+%    end
    
    methods
        %constructor

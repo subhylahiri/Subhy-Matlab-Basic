@@ -26,7 +26,7 @@ classdef ImageSequence < ImageReader
    
    methods 
        function im=readFrame(obj,framenumber)
-           im=imread([obj.path,obj.filepre,sprintf(obj.numberformat,framenumber),obj.extension]);
+           im=imread(obj.getFilename(framenumber));
        end
    end %methods: private utility functions
 
@@ -34,14 +34,21 @@ classdef ImageSequence < ImageReader
        copy=CopyConstruct(original,copy)
        h=GetPath(h)
    end %methods
-   methods (Static=true)
-       function [ h ] = loadobj( a )
-            %LOADOBJ replace tracker struct with TrackerData object
-            h=loadobj@ImageReader(a);
-            h=GetPath(h);
-       end
-   end  
+%    methods (Static=true)
+%        function [ h ] = loadobj( a )
+%             %LOADOBJ replace tracker struct with TrackerData object
+%             h=loadobj@ImageReader(a);
+%             h=GetPath(h);
+%        end
+%    end  
    
+    methods
+        function fname=getFilename(obj,framenumber)
+            fname=[obj.path,obj.filepre,sprintf(obj.numberformat,framenumber),obj.extension];
+        end
+    end
+   
+
    methods
        %constructor
        function obj=ImageSequence(varargin)

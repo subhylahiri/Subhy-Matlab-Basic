@@ -19,15 +19,16 @@ classdef ImSeqWriter < ImageSequence & ImageWriter
    
    methods 
        function writeFrame(obj,im,framenumber)
-           imwrite(im,[obj.path,obj.filepre,sprintf(obj.numberformat,framenumber),obj.extension],obj.options{:});
+           imwrite(im,obj.getFilename(framenumber),obj.options{:});
        end
    end %methods: private utility functions
-   methods (Static=true)
-       function [ h ] = loadobj( a )
-        %LOADOBJ replace tracker struct with TrackerData object
-        h=loadobj@ImageSequence(a);
-       end
-   end
+   
+%    methods (Static=true)
+%        function [ h ] = loadobj( a )
+%         %LOADOBJ replace tracker struct with TrackerData object
+%         h=loadobj@ImageSequence(a);
+%        end
+%    end
    
    methods
        %constructor
@@ -35,6 +36,7 @@ classdef ImSeqWriter < ImageSequence & ImageWriter
            %
            %First: set up argument list for Superclass constructor
            %
+           [tempoptions,varargin]=ExtractArgOfType(varargin,'cell');
            %
            %Second: call Superclass constructor
            %
@@ -45,6 +47,7 @@ classdef ImSeqWriter < ImageSequence & ImageWriter
            %
            % Third: set the images object
            %
+           obj.options=tempoptions;
            %
        end %constructor
    end %methods
