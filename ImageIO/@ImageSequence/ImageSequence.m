@@ -55,6 +55,8 @@ classdef ImageSequence < ImageReader
            %
            %First: set up argument list for Superclass constructor
            %
+           args={};
+           fileargs=varargin;
            for i=1:4
                if nargin>=i && ~isa(varargin{i},'char')
                    args=varargin(i:end);

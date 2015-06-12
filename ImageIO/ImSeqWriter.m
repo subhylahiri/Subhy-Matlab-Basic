@@ -36,7 +36,7 @@ classdef ImSeqWriter < ImageSequence & ImageWriter
            %
            %First: set up argument list for Superclass constructor
            %
-           [tempoptions,varargin]=ExtractArgOfType(varargin,'cell');
+           [tempoptions,varargin]=extractArgOfType(varargin,'cell');
            %
            %Second: call Superclass constructor
            %
@@ -47,7 +47,9 @@ classdef ImSeqWriter < ImageSequence & ImageWriter
            %
            % Third: set the images object
            %
-           obj.options=tempoptions;
+           if ~isempty(tempoptions)
+               obj.options=tempoptions;
+           end
            %
        end %constructor
    end %methods
