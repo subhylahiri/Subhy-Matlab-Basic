@@ -12,6 +12,7 @@ You can download the following (google for "matlab {package name}"):
 * freezeColors  
 * gmdmp  
 * dockf  
+* redblue
 
 You may also need the following functions written by Marc Gershow:
 * assignApplicable  
