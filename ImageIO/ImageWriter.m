@@ -5,6 +5,8 @@ classdef ImageWriter
   properties
       %clip images from figures so that # rows & cols is a multiple of this
       clipfactor=16;
+      %resolution for figure capture
+      resolution=0;
   end
    
    methods (Abstract=true)
@@ -18,7 +20,7 @@ classdef ImageWriter
        function rgb=fig2im(obj,figh)
            %get image from figure handle figh
            error(CheckType(obj,'ImageWriter'));
-           rgb=print(figh,'-RGBImage');
+           rgb=print(figh,'-RGBImage',['-r' int2str(obj.resolution)]);
 %            f=getframe(figh);
 %            [im,map] = frame2im(f);    %Return associated image data 
 %            if isempty(map)            %Truecolor system
