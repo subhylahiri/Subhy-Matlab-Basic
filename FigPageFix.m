@@ -10,7 +10,7 @@ if ~exist('figh','var') || isempty(figh)
 end
 
 figh.PaperPositionMode = 'auto';
-figh.PaperSize = hFig.PaperPosition(3:4);
+figh.PaperSize = figh.PaperPosition(3:4);
 
 
 end
