@@ -9,13 +9,17 @@ function [thearg,argcell] = extractArgOfType(argcell,typename)
 %############################################
 error(CheckType(argcell,'cell'));
 error(CheckType(typename,'char'));
-whichind=find(cellfun(@(x) isa(x,typename),argcell),1,'first');
-if isempty(whichind)
-    thearg=[];
+if isempty(argcell)
+    thearg = [];
 else
-    thearg=argcell{whichind}(1);
-    argcell(whichind)=[];
-end%if nargin>=1 && isa(varargin{1},'Tuple')
+    whichind=find(cellfun(@(x) isa(x,typename),argcell),1,'first');
+    if isempty(whichind)
+        thearg=[];
+    else
+        thearg=argcell{whichind};
+        argcell(whichind)=[];
+    end%if isempty(whichind)
+end%if isempty(argcell)
 
 %############################################
 

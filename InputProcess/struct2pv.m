@@ -1,8 +1,8 @@
 function [ c ] = struct2pv( s )
-%STRUCT2PV Summary of this function goes here
+%c=STRUCT2PV(s) Convert struct to {Parameter,Values} cell
 %   Detailed explanation goes here
 
-c=[fields(s) struct2cell(s)]';
+c=[fieldnames(s) struct2cell(s)]';
 
 c=c(:)';
 
