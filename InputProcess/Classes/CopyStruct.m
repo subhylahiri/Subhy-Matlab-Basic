@@ -34,7 +34,7 @@ for i=1:length(fns)
    try
        [copy.(fns{i})]=deal(strct.(fns{i}));
    catch exception
-       if ~strcmp(exception.identifier,'MATLAB:class:SetProhibited')
+       if ~ismember(exception.identifier,{'MATLAB:class:SetProhibited','MATLAB:noPublicFieldForClass'})
            rethrow(exception);
        end%if
   end%try
