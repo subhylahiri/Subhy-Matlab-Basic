@@ -18,7 +18,7 @@ classdef ImageReader
 %            %
 %            %Second: call Superclass constructor
 %            %
-%            liobj=liobj@larvaimages(args{:});
+%            liobj=liobj@ImageReader(args{:});
 %            %
 %            % Third: set the images object
 %            %
@@ -26,38 +26,19 @@ classdef ImageReader
 %            %
 
     properties
-       % frames to include
-       firstfr=1;
-       lastfr=1;
-       %for displaying
-       multiplier=1;
-       offset=0;
-       %Tracker data
-       tracker=[];
+        % frames to include
+        firstfr=1;
+        lastfr=1;
+        %for displaying
+        multiplier=1;
+        offset=0;
     end% properties
-    
-%     methods
-%         function obj=set.firstfr(obj,value)
-%             if ~isa(value,'integer')
-%                 error('firstfr must be an integer')
-%             end %if
-%             obj.firstfr=value;
-%         end %set.firstfr
-% 
-%         function obj=set.lastfr(obj,value)
-%             if ~isa(value,'integer')
-%                 error('lastfr must be an integer')
-%             end %if
-%             obj.lastfr=value;
-%         end %set.firstfr
-%         
-%     end %set methods
     
     methods
        %
        function ftitle=frameTitle(irobj,n)
            ftitle=[int2str(n),' of ',int2str(irobj.firstfr),...
-        ' to ',int2str(irobj.lastfr)];
+                ' to ',int2str(irobj.lastfr)];
        end %frametitle
        %
        % display etc 
@@ -66,69 +47,59 @@ classdef ImageReader
            ims=(im-irobj.offset)*irobj.multiplier;
        end
        %
-       function disp(irobj)
-           % displays frames included.
-           disp(['Frames: ',int2str([irobj.firstfr]),' to ',int2str([irobj.lastfr])]);
-       end %disp
-       %
-%        function display(irobj)
-%            disp(irobj);
-%        end %display   
+%        function disp(irobj)
+%            % displays frames included.
+%            disp(['Frames: ',int2str([irobj.firstfr]),' to ',int2str([irobj.lastfr])]);
+%        end %disp
        %
        play(irobj,varargin)
      end %methods
      
-     methods (Access=private)
-         copy=CopyConstruct(original,copy)
-     end %methods
-        
-   methods (Abstract=true)
-       %This method must be defined in a derived class. It takes a frame
-       %number, FRAMENUMBER, and returns an image (matrix of integers), IM.
-       im=readFrame(liobj,framenumber)
-   end %Abstract methods
+       
+    methods (Abstract=true)
+        %This method must be defined in a derived class. It takes a frame
+        %number, FRAMENUMBER, and returns an image (matrix of integers), IM.
+        im=readFrame(liobj,framenumber)
+    end %Abstract methods
    
-%    methods (Static=true)
-%        function [ h ] = loadobj( a )
-%         %LOADOBJ replace tracker struct with TrackerData object
-%         h=a;
-%         h.tracker=TrackerData(a.tracker);
-%        end
-%    end
+    methods (Access=private)%for constructiuon
+        %called by constructor
+        copy=CopyProps(original,copy)
+        copy=CopyStruct(strct,copy)
+        [s,x] = assignToObject(s, x)
+    end%methods
    
-   methods
-       %constructor
-       function irobj=ImageReader(varargin)
-           switch nargin
-               case 0
-                   %do nothing
-               case 1
-                   if isa(varargin{1},'ImageReader')
-                       irobj=CopyConstruct(varargin{1},irobj); %copy constructor
-                   else
-                       error('Unknown inputs');
-                   end %if
-               case 2
-                   if isa(varargin{1},'double') && isa(varargin{2},'double')
-                       irobj.firstfr=varargin{1};
-                       irobj.lastfr=varargin{2};
-                   else
-                       error('Unknown inputs');
-                   end %if
-               case 3
-                   if isa(varargin{1},'double') && isa(varargin{2},'double')...
-                           && isa(varargin{3},'char')
-                       irobj.firstfr=varargin{1};
-                       irobj.lastfr=varargin{2};
-                       irobj.tracker=TrackerData(varargin{3});
-                   else
-                       error('Unknown inputs');
-                   end %if
-               otherwise
-                   error('Unknown inputs');
-           end %switch
-       end %constructor
-   end %methods
+    methods
+        %constructor
+        function irobj=ImageReader(varargin)
+            if nargin ~=0%false -> default constructor does nothing
+                %
+                %default parameters:
+                %
+                %if we're copying another obj
+                [tempobj,varargin]=extractArgOfType(varargin,'ImageReader');
+                if ~isempty(tempobj)
+                    irobj = CopyProps(tempobj,irobj);
+                end
+                %
+                %Extract data from struct:
+                %
+                [IMstruct,varargin]=extractArgOfType(varargin,'struct');
+                if ~isempty(IMstruct)
+                    [irobj, IMstruct] = outer_resize(irobj, IMstruct);
+                    irobj = singletonexpand(@CopyStruct, IMstruct, irobj);
+                end
+                %
+                %set values manually:
+                [irobj,varargin]=assignToObject(irobj,varargin);
+                %
+                if length(varargin) >= 2
+                   irobj.firstfr=varargin{1};
+                   irobj.lastfr=varargin{2};
+                end
+            end%if nargin ~=0
+        end %constructor
+    end %methods
    
 
 end %classdef

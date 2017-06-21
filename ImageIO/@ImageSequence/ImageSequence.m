@@ -21,7 +21,7 @@ classdef ImageSequence < ImageReader
    properties 
        % DATA:
        path=''; %path to files
-   end %properties: not editable
+   end %properties: editable
    
    
    methods 
@@ -30,53 +30,65 @@ classdef ImageSequence < ImageReader
        end
    end %methods: private utility functions
 
-   methods (Access=private)
-       copy=CopyConstruct(original,copy)
-       h=GetPath(h)
-   end %methods
-%    methods (Static=true)
-%        function [ h ] = loadobj( a )
-%             %LOADOBJ replace tracker struct with TrackerData object
-%             h=loadobj@ImageReader(a);
-%             h=GetPath(h);
-%        end
-%    end  
-   
     methods
         function fname=getFilename(obj,framenumber)
-            fname=[obj.path,obj.filepre,sprintf(obj.numberformat,framenumber),obj.extension];
+            fname=[obj.path, obj.filepre, sprintf(obj.numberformat,framenumber), obj.extension];
         end
     end
    
+    methods (Access=private)%for constructiuon
+        %called by constructor
+        copy=CopyProps(original,copy)
+        copy=CopyStruct(strct,copy)
+        [s,x] = assignToObject(s, x)
+    end%methods
 
-   methods
-       %constructor
-       function obj=ImageSequence(varargin)
-           %
-           %First: set up argument list for Superclass constructor
-           %
-           args={};
-           fileargs=varargin;
-           for i=1:4
+    methods
+        %constructor
+        function obj=ImageSequence(varargin)
+            %
+            %First: set up argument list for Superclass constructor
+            %
+            args={};
+            fileargs=varargin;
+            for i=1:4
                if nargin>=i && ~isa(varargin{i},'char')
                    args=varargin(i:end);
                    fileargs=varargin(1:i-1);
                    break;
                end %if
-           end %for
+            end %for
 %            if numel(fileargs)<1
 %                error('Unknown inputs');
 %            end %if
            %
-           %Second: call Superclass constructor
-           %
-           obj=obj@ImageReader(args{:});
-           %
-           % Third: set the images object
-           %
-           if isempty(fileargs)
-               obj=CopyConstruct(varargin{1},obj); %copy constructor
-           else
+            %Second: call Superclass constructor
+            %
+            obj=obj@ImageReader(args{:});
+            %
+            % Third: set the images object
+            %
+            %
+            %if we're copying another obj
+            [tempobj,varargin]=extractArgOfType(varargin,'ImageSequence');
+            if ~isempty(tempobj)
+                obj = CopyProps(tempobj, obj);
+            end
+            %
+            %Extract data from struct:
+            %
+            [IMstruct,varargin]=extractArgOfType(varargin,'struct');
+            if ~isempty(IMstruct)
+                obj = CopyStruct(IMstruct, obj);
+            end
+            %
+            %set values manually:
+            [obj,varargin]=assignToObject(obj,varargin);
+            %
+            if ~isempty(varargin)
+%                     error('Unknown inputs');
+            end
+            if ~isempty(fileargs)
                obj.filepre=fileargs{1};
                obj=GetPath(obj);
                if numel(fileargs)>1
@@ -85,10 +97,10 @@ classdef ImageSequence < ImageReader
                if numel(fileargs)>2
                    obj.extension=fileargs{3};
                end %if
-           end %if
-           %
-       end %constructor
-   end %methods
+            end %if
+            %
+        end %constructor
+    end %methods
 
 end %clasdef
 

@@ -71,7 +71,6 @@ classdef CLASSNAME
                     if ~isempty(tempobj)
                         [obj, tempobj] = outer_resize(obj, tempobj);
                         obj = singletonexpand(@CopyProps, tempobj, obj);
-                        obj = CopyProps(tempobj,obj);
                     end
                     %
                     %Extract data from struct:
