@@ -59,7 +59,7 @@ classdef ImageReader
     methods (Abstract=true)
         %This method must be defined in a derived class. It takes a frame
         %number, FRAMENUMBER, and returns an image (matrix of integers), IM.
-        im=readFrame(liobj,framenumber)
+        im=readFrame(irobj,framenumber)
     end %Abstract methods
    
     methods (Access=private)%for constructiuon

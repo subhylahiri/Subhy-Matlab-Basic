@@ -39,10 +39,10 @@ classdef ImageWriter
        function im=clip(obj,im)
            cliptop=mod(size(im,1),obj.clipfactor);
            clipbottom=ceil(cliptop/2);
-           cliptop=floor(cliptop/2);
+           cliptop=cliptop-clipbottom;
            clipleft=mod(size(im,2),obj.clipfactor);
            clipright=ceil(clipleft/2);
-           clipleft=floor(clipleft/2);
+           clipleft=clipleft-clipright;
            if ndims(im)==3
                im(1:cliptop,:,:)=[];
                im(end-clipbottom+1:end,:,:)=[];
