@@ -23,27 +23,31 @@ classdef AnimatedGifWriter < TiffStackWriter
    
    methods 
        function writeFrame(obj,im,framenumber)
-           [A, map] = rgb2ind(im, obj.NumColors);
-           if framenumber == obj.firstfr
-               imwrite(A,map,[obj.path,obj.filename],'gif',obj.options{:},...
-                   'LoopCount',obj.LoopCount,'DelayTime',obj.DelayTime);
+           if ismatrix(im)
+               [A, map] = gray2ind(im, obj.NumColors);
            else
-               imwrite(A,map,[obj.path,obj.filename],'gif',obj.options{:},...
-                   'WriteMode','append');
+               [A, map] = rgb2ind(im, obj.NumColors);
+           end
+           if framenumber == obj.firstfr
+               imwrite(A, map, [obj.path, obj.filename], 'gif', obj.options{:},...
+                   'LoopCount', obj.LoopCount, 'DelayTime', obj.DelayTime);
+           else
+               imwrite(A, map, [obj.path, obj.filename], 'gif', obj.options{:},...
+                   'WriteMode', 'append');
            end
        end
    end %methods: private utility functions
     
     methods
        %constructor
-       function obj=AnimatedGifWriter(varargin)
+       function obj = AnimatedGifWriter(varargin)
            %
            %First: set up argument list for Superclass constructor
            %
            %
            %Second: call Superclass constructor
            %
-           obj=obj@TiffStackWriter(varargin{:});
+           obj = obj@TiffStackWriter(varargin{:});
            %
            % Third: set the images object
            %
