@@ -1,22 +1,20 @@
 function play(irobj,varargin)
 
-%initialise counters
-firstframe = irobj.firstfr;
-lastframe = irobj.lastfr;
-starttime = [];
-endtime = [];
-% tracker = [];
-
-varargin = assignApplicable(varargin);
-
-if (~isempty(starttime))
-    firstframe =  irobj.tracker.time2frame(starttime);
+persistent p
+if isempty(p)
+    p=inputParser;
+    p.FunctionName='ImageReader.play';
+    p.StructExpand=true;
+    p.KeepUnmatched=false;
+    p.addOptional('firstframe',-Inf)
+    p.addOptional('lastframe',Inf)
 end
-if (~isempty(endtime))
-    lastframe =  irobj.tracker.time2frame(endtime);
-end
-firstframe = max(firstframe, irobj.firstfr);
-lastframe = min(lastframe, irobj.lastfr);
+p.parse(varargin{:});
+
+
+
+firstframe = max(p.Results.firstframe, irobj.firstfr);
+lastframe = min(p.Results.lastframe, irobj.lastfr);
 
 
 

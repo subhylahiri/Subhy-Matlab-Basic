@@ -1,27 +1,20 @@
-classdef TiffStackReader < ImageReader
-    %TIFFSTACKREADER ImageReader for a TIFF stack (or animated GIF)
+classdef VideoFileWriter < ImageWriter
+    %VIDEOFILEWRITER ImageReader for a video file, wrapper of VideoWriter
     % Possible constructors:
-    % TSTK=TIFFSTACKREADER(OTHERTSTK) - copy constructor 
-    % TSTK=TIFFSTACKREADER(FILENAME,FIRSTFR,LASTFR)
-    %   where FILENAME is a string with the file name, [FIRSTFR,LASTFR]
-    %   are the first and last frames.
-    % If [FIRSTFR,LASTFR] are not specified, they are set to
-    % [1,Number Of Frames]. 
+    % VID=VIDEOFILEWRITER(OTHELVID) - copy constructor
+    % VID=VIDEOFILEWRITER(WRITEROBJ)
+    % VID=VIDEOFILEWRITER(FILENAME)
+    %   where WRITEROBJ is an VideoWriter object for the video,
 
     properties (SetAccess=private)
        % DATA:
-       filename=''; %name of TIFF file, e.g. 'im_00001.tif'
+       writerobj; %input video
     end %properties: not editable
-
-    properties 
-       % DATA:
-       path=''; %path to files
-    end %properties: not editable
-
-
+   
+   
     methods
-       function im=readFrame(obj,framenumber)
-           im=imread([obj.path,obj.filename],framenumber);
+       function iwriteFrame(obj,im,~)
+           writeVideo(obj.writerobj,im);
        end
     end %methods: private utility functions
 
@@ -31,10 +24,10 @@ classdef TiffStackReader < ImageReader
         copy=CopyStruct(strct,copy)
         [s,x] = assignToObject(s, x)
     end%methods
-
+   
     methods
-       %constructor
-       function obj=TiffStackReader(varargin)
+        %constructor
+        function obj=VideoFileWriter(varargin)
             %
             %First: set up argument list for Superclass constructor
             %
@@ -42,9 +35,9 @@ classdef TiffStackReader < ImageReader
                case 0
                    error('Needs some arguments');
                otherwise
-                   if isa(varargin{1},'char')
+                   if ( isa(varargin{1},'VideoWriter') || isa(varargin{1},'char') )
                        args=varargin(2:end);
-                   elseif isa(varargin{1},'TiffStackReader')
+                   elseif isa(varargin{1},'VideoFileWriter')
                        args=varargin;
                    else
                        error('Unknown inputs');
@@ -53,24 +46,22 @@ classdef TiffStackReader < ImageReader
             %
             %find number of frames, if neccessary
             %
-            if isempty(args) ...
-                   || ( numel(args)==1 && ~isa(args{1},'TiffStackReader') ) ...
-                   || ( numel(args)>1 && ~( isa(args{1},'double') && isa(args{2},'double') ) )
-               if exist(varargin{1},'file')
-                   args=[{1,numel(imfinfo(varargin{1}))},args];
-               else
-                   args=[{1,1},args];
-               end%if exist
+            if isa(varargin{1},'VideoWriter')
+               tempreaderobj=varargin{1};
+            elseif isa(varargin{1},'char')
+               tempreaderobj=VideoWriter(varargin{1});
+            else
+                tempreaderobj=struct('NumberOfFrames',1);
             end %if
             %
             %Second: call Superclass constructor
             %
-            obj=obj@ImageReader(args{:});
+            obj=obj@ImageWriter(args{:});
             %
             % Third: set the images object
             %
             %if we're copying another obj
-            [tempobj,varargin]=extractArgOfType(varargin,'TiffStackReader');
+            [tempobj,varargin]=extractArgOfType(varargin,'VideoFileWriter');
             if ~isempty(tempobj)
                 obj = CopyProps(tempobj, obj);
             end
@@ -84,13 +75,12 @@ classdef TiffStackReader < ImageReader
             %set values manually:
             [obj,varargin]=assignToObject(obj,varargin);
             %
-            if ~isempty(varargin) && isa(varargin{1},'char')
-               obj.filename=varargin{1};
-               obj=GetPath(obj);
+            if isa(tempreaderobj,'VideoWriter')
+                obj.writerobj=tempreaderobj;
             end %if
-          %
-       end %constructor
+            %
+        end %constructor
     end %methods
-
-end %classdef
+   
+end
 

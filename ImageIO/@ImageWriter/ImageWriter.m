@@ -56,10 +56,39 @@ classdef ImageWriter
            end
        end
    end
+
+    methods (Access=private)%for constructiuon
+        %called by constructor
+        copy=CopyProps(original,copy)
+        copy=CopyStruct(strct,copy)
+        [s,x] = assignToObject(s, x)
+    end%methods
    
    methods
        %constructor
-       function obj=ImageWriter
+       function obj=ImageWriter(varargin)
+            if nargin ~=0%false -> default constructor does nothing
+                %
+                %default parameters:
+                %
+                %if we're copying another obj
+                [tempobj,varargin]=extractArgOfType(varargin,'ImageWriter');
+                if ~isempty(tempobj)
+                    obj = CopyProps(tempobj,obj);
+                end
+                %
+                %Extract data from struct:
+                %
+                [IMstruct,varargin]=extractArgOfType(varargin,'struct');
+                if ~isempty(IMstruct)
+                    [obj, IMstruct] = outer_resize(obj, IMstruct);
+                    obj = singletonexpand(@CopyStruct, IMstruct, obj);
+                end
+                %
+                %set values manually:
+                [obj,varargin]=assignToObject(obj,varargin);
+                %
+            end%if nargin ~=0
        end %constructor
    end %methods
 

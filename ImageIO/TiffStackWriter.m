@@ -9,23 +9,17 @@ classdef TiffStackWriter < TiffStackReader & ImageWriter
     %   where FILENAME is a string with the file name, [FIRSTFR,LASTFR]
     %   are the first and last frames(not necessary for writing).
     
-   properties
-       % DATA:
-       options={};
-   end
+    properties
+        % DATA:
+        options={};
+    end
    
    
-   methods 
-       function writeFrame(obj,im,~)
-           imwrite(im,[obj.path,obj.filename],'tiff',obj.options{:},'WriteMode','append');
-       end
-   end %methods: private utility functions
-   methods (Static=true)
-       function [ h ] = loadobj( a )
-        %LOADOBJ replace tracker struct with TrackerData object
-        h=loadobj@TiffStackReader(a);
-       end
-   end
+    methods 
+        function writeFrame(obj,im,~)
+            imwrite(im,[obj.path,obj.filename],'tiff',obj.options{:},'WriteMode','append');
+        end
+    end %methods
     
     methods
        %constructor

@@ -1,12 +1,12 @@
-classdef VideoReader < ImageReader
-    %VIDEOREADER ImageReader for a video file
+classdef VideoFileReader < ImageReader
+    %VIDEOFILEREADER ImageReader for a video file, wrapper of VideoReader
     % Possible constructors:
-    % VID=VIDEOREADER(OTHELVID) - copy constructor (NOT IMPLEMENTED NOW)
-    % VID=VIDEOREADER(READEROBJ)
-    % VID=VIDEOREADER(READEROBJ,FIRSTFR,LASTFR)
-    % VID=VIDEOREADER(FILENAME)
-    % VID=VIDEOREADER(FILENAME,FIRSTFR,LASTFR)
-    %   where READEROBJ is an mmreader object for the larva video,
+    % VID=VIDEOFILEREADER(OTHELVID) - copy constructor
+    % VID=VIDEOFILEREADER(READEROBJ)
+    % VID=VIDEOFILEREADER(READEROBJ,FIRSTFR,LASTFR)
+    % VID=VIDEOFILEREADER(FILENAME)
+    % VID=VIDEOFILEREADER(FILENAME,FIRSTFR,LASTFR)
+    %   where READEROBJ is an VideoReader object for the video,
     %   [FIRSTFR,LASTFR] are the first and last frames, and FILENAME is a
     %   string the filename of the video. 
     % If [FIRSTFR,LASTFR] are not specified, they are set to
@@ -20,7 +20,7 @@ classdef VideoReader < ImageReader
    
     methods
        function im=readFrame(obj,framenumber)
-           im=read(obj.readerobj,framenumber);
+           im=readFrame(obj.readerobj,framenumber);
        end
     end %methods: private utility functions
 
@@ -33,7 +33,7 @@ classdef VideoReader < ImageReader
    
     methods
         %constructor
-        function obj=VideoReader(varargin)
+        function obj=VideoFileReader(varargin)
             %
             %First: set up argument list for Superclass constructor
             %
@@ -41,9 +41,9 @@ classdef VideoReader < ImageReader
                case 0
                    error('Needs some arguments');
                otherwise
-                   if ( isa(varargin{1},'mmreader') || isa(varargin{1},'char') )
+                   if ( isa(varargin{1},'VideoReader') || isa(varargin{1},'char') )
                        args=varargin(2:end);
-                   elseif isa(varargin{1},'VideoReader')
+                   elseif isa(varargin{1},'VideoFileReader')
                        args=varargin;
                    else
                        error('Unknown inputs');
@@ -52,13 +52,15 @@ classdef VideoReader < ImageReader
             %
             %find number of frames, if neccessary
             %
-            if isa(varargin{1},'mmreader')
+            if isa(varargin{1},'VideoReader')
                tempreaderobj=varargin{1};
             elseif isa(varargin{1},'char')
-               tempreaderobj=mmreader(varargin{1});
+               tempreaderobj=VideoReader(varargin{1});
+            else
+                tempreaderobj=struct('NumberOfFrames',1);
             end %if
             if isempty(args) ...
-                   || ( numel(args)==1 && ~isa(args{1},'VideoReader') ) ...
+                   || ( numel(args)==1 && ~isa(args{1},'VideoFileReader') ) ...
                    || ( numel(args)>1 && ~( isa(args{1},'double') && isa(args{2},'double') ) )
                args=[{1,tempreaderobj.NumberOfFrames},args];
             end %if
@@ -70,7 +72,7 @@ classdef VideoReader < ImageReader
             % Third: set the images object
             %
             %if we're copying another obj
-            [tempobj,varargin]=extractArgOfType(varargin,'VideoReader');
+            [tempobj,varargin]=extractArgOfType(varargin,'VideoFileReader');
             if ~isempty(tempobj)
                 obj = CopyProps(tempobj, obj);
             end
@@ -84,8 +86,8 @@ classdef VideoReader < ImageReader
             %set values manually:
             [obj,varargin]=assignToObject(obj,varargin);
             %
-            if ~isempty(varargin) && ( isa(varargin{1},'mmreader') || isa(varargin{1},'char') )
-               obj.readerobj=tempreaderobj;
+            if isa(tempreaderobj,'VideoReader')
+                obj.readerobj=tempreaderobj;
             end %if
             %
         end %constructor
