@@ -238,24 +238,30 @@ DrawHist;
 %  Utility functions
 
  
+    function pos = CalcPos(which, maxwhich, parentpos)
+    %pos=CALCPOS(which,maxwhich,left,bottom,width,height)
+    %Calculate position for panel in grid of size [left bottom width height]
+    %   which = [row, column]
+        pos = parentpos;
+        %note that [row col] is opposite order to [left bot] & [wdth hght]
+        pos(3:4) = pos(3:4) ./ wrev(maxwhich);
+        num = wrev(which) .* [1, 1];
+        %num is [col row]
+        num(end) = maxwhich(1) - num(end);
+        num(1) = num(1) - 1;
+        pos(1:2) = pos(1:2) + pos(3:4) .* num;
+    end
+
     function pos = CalcPosVert(which, maxwhich, parentpos)
     %pos=CALCPOSVERT(which,maxwhich,left,bottom,width,height)
     %Calculate position for panel in vertical grid of size [left bottom width height]
-        parentpos = num2cell(parentpos);
-        [left,bottom,width,height] = deal(parentpos{:});
-        height = height / maxwhich;
-        bottom = bottom + height * (maxwhich - which);
-        pos = [left bottom width height];
+        pos = CalcPos([which, 1], [maxwhich, 1], parentpos);
     end
 
     function pos = CalcPosHorz(which, maxwhich, parentpos)
     %pos=CALCPOSHORZ(which,maxwhich,left,bottom,width,height)
     %Calculate position for panel in horizontal grid of size [left bottom width height]
-        parentpos = num2cell(parentpos);
-        [left,bottom,width,height] = deal(parentpos{:});
-        width = width / maxwhich;
-        left = left + width * (which - 1);
-        pos = [left bottom width height];
+        pos = CalcPos([1, which], [1, maxwhich], parentpos);
     end
 
 %-------------------------------------------------------------------------
