@@ -34,9 +34,9 @@ S.inMax = 255;
 S.outClass = @uint8;
 S.outMin = double(intmin(func2str(S.outClass)));
 S.outMax = double(intmax(func2str(S.outClass)));
-S.bkgnd = zeros(1, 1, 3);
-S.frgnd = ones(1, 1, 3);
-
+% S.bkgnd = zeros(1, 1, 3);
+% S.frgnd = ones(1, 1, 3);
+S.clr = cat(2, zeros(1, 1, 3), ones(1, 1, 3));
 
 slpos = [0, 0, 1, 0.1];
 slpos2 = [0, 0, 1, 0.2];
@@ -101,6 +101,7 @@ edh = matlab.ui.control.UIControl.empty;
 edslh = matlab.ui.control.UIControl.empty;
 bgh = matlab.ui.container.ButtonGroup.empty;
 rdh = matlab.ui.control.UIControl.empty;
+edrdh = matlab.ui.control.UIControl.empty;
 pbh = matlab.ui.control.UIControl.empty;
 imh = matlab.graphics.primitive.Image.empty;
 lnh = matlab.graphics.chart.primitive.Line.empty;
@@ -122,8 +123,8 @@ MakeEditBox(ph(2), 2, 'inMax');
 
 MakeSlider(ph(3), 2, 'logExponent', -4, 4, slpos2);
 
-MakeRadio(ph(4), 1, 'bkgnd', 1);
-MakeRadio(ph(5), 2, 'frgnd', 8);
+MakeRadio(ph(4), 1, 'clr', 1);
+MakeRadio(ph(5), 2, 'clr', 8);
 
 pmh = uicontrol(ph(6), 'Style', 'popupmenu', bopts{:},...
     'Position', [0 0 1 1],...
@@ -221,11 +222,29 @@ PlotNonlin;
         ShowImages;
     end
 
-    function bg_callback(~, event, varname)
+    function bg_callback(~, event, varname, which)
     %BG_CALLBACK(~,event, varname) callback for radio button group
     %   event: struct with fields NewValue/OldValue: handles of radio buttons.
     %   varname: name of field of struct S to update.
-        S.(varname) = event.NewValue.UserData;
+        if isempty(event.NewValue.UserData)
+            for i = 1:3
+                edrd_callback(edrdh(which,i), 1, varname, which, i);
+            end
+        else
+            S.(varname)(:,which,:) = event.NewValue.UserData;
+            for i = 1:3
+                edrdh(which,i).String = num2str(event.NewValue.UserData(i));
+            end
+        end
+        normfn = CalcNorm(S);
+        ShowImages;
+    end
+
+    function edrd_callback(source, ~, varname, which, ind)
+    %ED_CALLBACK(source,~,varname) callback for edit-boxes
+    %   varname: name of field of struct S to update.
+        bgh(which).SelectedObject = rdh(which, end);
+        S.(varname)(:,which,ind) = str2double(source.String);
         normfn = CalcNorm(S);
         ShowImages;
     end
@@ -266,8 +285,10 @@ PlotNonlin;
 
     function nfn = CalcNorm(Str)
     %nfn = CALCNORM(Str) recompute normalisation function handle
+        bkgnd = Str.clr(:,1,:);
+        frgnd = Str.clr(:,2,:);
         nfn = @(x) Str.outClass(Str.outMin + (Str.outMax - Str.outMin) * ...
-            (Str.bkgnd + (Str.frgnd - Str.bkgnd) .* ...
+            (bkgnd + (frgnd - bkgnd) .* ...
             min(max((x - Str.inMin) / (Str.inMax - Str.inMin), 0), 1) .^ ...
             exp(Str.logExponent)));
     end
@@ -343,7 +364,7 @@ PlotNonlin;
         slh(which) = uicontrol(phs, 'Style', 'slider', bopts{:},...
                         'Max', imr.lastfr, 'Min', imr.firstfr,...
                         'Value', S.frameno,...
-                        'SliderStep', [1 10],...
+                        'SliderStep', [1 10] / (imr.lastfr - imr.firstfr),...
                         'Position', [0.1 0.25 0.8 0.7],...
                         'Callback', {@sl_callback, which, 'frameno'});
         %slider labels
@@ -392,16 +413,31 @@ PlotNonlin;
     %       outColourNames: 1 x N cell of strings of names
     %       outColours: N x 3 array of RGB values
         bgh(which) = uibuttongroup(parent, 'Position', [0 0 1 1],...
-            'SelectionChangedFcn', {@bg_callback, varname});
-        %control
+            'SelectionChangedFcn', {@bg_callback, varname, which});
+        n = length(outColourNames);
+        %radio buttons for default colours
         for i = 1:length(outColourNames)
             rdh(which, i) = uicontrol(bgh(which), 'Style', 'radiobutton', bopts{:},...
                 'String', outColourNames{i},...
                 'UserData', reshape(outColours(i, :), [1, 1, 3]),...
                 'Tag', lowhi{i},...
-                'Position', CalcPosHorz(i, length(outColourNames), [0, 0, 1, 1]));
+                'Position', CalcPosHorz(i, n+4, [0, 0, 1, 1]));
         end
+        %radio button for custom colour
+        rdh(which, n+1) = uicontrol(bgh(which), 'Style', 'radiobutton', bopts{:},...
+            'String', 'cust.',...
+            'UserData', [],...
+            'Tag', lowhi{default},...
+            'Position', CalcPosHorz(n+1, n+4, [0, 0, 1, 1]));
         bgh(which).SelectedObject = rdh(which, default);
+        %edit boxes for custom colour
+        for i = 1:3
+            edrdh(which, i) = uicontrol(bgh(which), 'Style', 'edit', bopts{:},...
+                'String', num2str(S.clr(1, which, i)),...
+                'UserData', [],...
+                'Position', CalcPosHorz(n+i+1, n+4, [0, 0, 1, 1]),...
+                'Callback', {@edrd_callback, varname, which, i});
+        end
     end%function MakeRadio
 
 %-------------------------------------------------------------------------
