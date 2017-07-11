@@ -1,9 +1,9 @@
 function DispCounterPar( i, imax )
-%msg=DISPCOUNTERPAR(i,imax,lab) Display progress of parfor loop
+%msg=DISPCOUNTERPAR(i,imax) Display progress of parfor loop
 %   i    = current value of loop counter, starting from 1
 %   imax = maximum value of loop counter
-%use DispCounter(0,imax,lab) to set up display
-%use DispCounter(imax+1,imax,lab) to delete final display
+%use DispCounter(0,imax) to set up display
+%use DispCounter(imax+1,imax) to delete final display
 
 if i==0
     fprintf(['\n' repmat('.',1,imax) '\n\n']);
