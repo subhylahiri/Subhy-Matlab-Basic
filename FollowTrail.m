@@ -41,7 +41,7 @@ for t = 2:T
 end
 
 
-linear_trail = sub2ind(size(state_choices), state_trail, 1:T);
+linear_trail = sub2ind([N, T], state_trail, 1:T);
 
 end
 
