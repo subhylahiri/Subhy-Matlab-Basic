@@ -9,8 +9,9 @@ if ~exist('figh','var') || isempty(figh)
     figh = gcf;
 end
 
-figh.PaperPositionMode = 'auto';
-figh.PaperSize = figh.PaperPosition(3:4);
+[figh.PaperPositionMode] = deal('auto');
+siz = cellfun(@(x) x(3:4), {figh.PaperPosition}, 'UniformOutput', false);
+[figh.PaperSize] = siz{:};
 
 
 end
