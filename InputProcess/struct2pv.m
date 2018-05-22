@@ -1,10 +1,13 @@
-function [ c ] = struct2pv( s )
+function [ pvs ] = struct2pv( varargin )
 %c=STRUCT2PV(s) Convert struct to {Parameter,Values} cell
-%   Detailed explanation goes here
+%   if s.A = B; s.C = D;... then c = {'A',B,'C',D,...}.
 
-c=[fieldnames(s) struct2cell(s)]';
+pvs = {};
 
-c=c(:)';
+for i=1:length(varargin)
+    c=[fieldnames(varargin{i}) struct2cell(varargin{i})]';
+    c=c(:)';
+    pvs = [pvs c];
 
 end
 
