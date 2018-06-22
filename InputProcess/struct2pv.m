@@ -1,6 +1,7 @@
 function [ pvs ] = struct2pv( varargin )
-%c=STRUCT2PV(s) Convert struct to {Parameter,Values} cell
-%   if s.A = B; s.C = D;... then c = {'A',B,'C',D,...}.
+%pvs=STRUCT2PV(s,...) Convert struct(s) to {Parameter,Values} cell
+%   if s.A = B; s.C = D;... then pvs = {'A',B,'C',D,...}.
+%   can combine multiple structs
 
 pvs = {};
 
