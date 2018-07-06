@@ -1,9 +1,9 @@
 function FigPageFix( figh )
-%FIGPAGEFIX(figh) Set page size for printing to pdf
-%   figh = figure object (handle)
+%FIGPAGEFIX(figh) Set page size for printing to pdf.
+%   figh = figure object (handle), or array thereof
 %   Sets figh.PaperPositionMode = 'auto'; 
 %   figh.Papersize = figh.PaperPosition(3:4).
-%   Needs to be rerun if figh is resized.
+%Needs to be rerun if figh is resized.
 
 if ~exist('figh','var') || isempty(figh)
     figh = gcf;
