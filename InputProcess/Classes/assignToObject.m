@@ -15,7 +15,9 @@ function [s,x] = assignToObject(s, x)
 % this loop is assigns the parameter/value pairs in x to the calling
 % workspace.
 used = [];
-p=properties(s);
+q = metaclass(s);
+p={q.PropertyList.Name};
+% p=properties(s);
 if ~isempty(x)
     skipnext = false;
    for i = 1:size(x,2)
