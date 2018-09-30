@@ -229,7 +229,7 @@ DrawHist;
     end
 
     function tg_callback(~, ~)
-    %TG_CALLBACK(source,~) callback for popup menu
+    %TG_CALLBACK(source,~) callback for toggle
     %   source: handle of object that called back
         ShowImage;
     end
