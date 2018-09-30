@@ -1,0 +1,19 @@
+function [ph, edh] = editbox(parent, data, varname, position, varargin)
+%[ph,edh]=EDITBOX(parent,data,varname,position) make edit box
+%   parent: parent figure/uipanel
+%   data: object that carries GUI state (subclass of handle)
+%   varname: name of property of DATA to update.
+%   position = [left bottom width height]
+%   DATA must have a method called Update with signature Update(OBJ,SRC)
+
+ph = uipanel(parent, varargin{:},...
+        'Position', position,...
+        'Title', varname);
+%control
+edh = uicontrol(phe, 'Style', 'edit', varargin{:},...
+    'String', num2str(S.(varname)),...
+    'Position', [0.05 0.05 0.9 0.9], 'Max', 1, 'Min', 0,...
+    'DeleteFcn', @mygui.circDeleteFcn,...
+    'Callback', {@mygui.callback.ed, data, varname});
+
+end%function MakeEditBox
