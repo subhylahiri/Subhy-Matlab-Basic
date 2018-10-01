@@ -152,11 +152,11 @@ PlotNonlin;
         switch which
             case 1
                 S.(varname) = floor(S.(varname));
-                ShowImages;
+                ChangeImages;
             case 2
                 normfn = CalcNorm(S);
-                PlotNonlin;
-                ShowImages;
+                ChangeNonlin;
+                ChangeImages;
         end
         edslh(which).String = num2str(S.(varname));
     end 
@@ -185,9 +185,9 @@ PlotNonlin;
     %   varname: name of field of struct S to update.
         S.(varname) = str2double(source.String);
 %         S.(varname) = floor(str2double(source.String));
-        DrawClip;
+        ChangeClip;
         normfn = CalcNorm(S);
-        ShowImages;
+        ChangeImages;
     end
 
     function play_callback(source, ~)
@@ -211,15 +211,15 @@ PlotNonlin;
         if which < 3
             S.(varname) = x;
             edh(which).String = num2str(x);
-            DrawClip;
+            ChangeClip;
         else
             S.(varname) = log(log(y) / log(x));
             slh(2).Value = S.(varname);
             sl_callback(slh(2), 0, 2, varname);
-            PlotNonlin;
+            ChangeNonlin;
         end
         normfn = CalcNorm(S);
-        ShowImages;
+        ChangeImages;
     end
 
     function bg_callback(~, event, varname, which)
@@ -237,7 +237,7 @@ PlotNonlin;
             end
         end
         normfn = CalcNorm(S);
-        ShowImages;
+        ChangeImages;
     end
 
     function edrd_callback(source, ~, varname, which, ind)
@@ -246,7 +246,7 @@ PlotNonlin;
         bgh(which).SelectedObject = rdh(which, end);
         S.(varname)(:,which,ind) = str2double(source.String);
         normfn = CalcNorm(S);
-        ShowImages;
+        ChangeImages;
     end
 
     function pm_callback(source, ~)
@@ -255,7 +255,7 @@ PlotNonlin;
         which = source.Value;
         changeOutType(intypes{which}, outGrey(which));
         normfn = CalcNorm(S);
-        ShowImages;
+        ChangeImages;
     end
 
 %-------------------------------------------------------------------------
@@ -289,7 +289,7 @@ PlotNonlin;
         frgnd = Str.clr(:,2,:);
         nfn = @(x) Str.outClass(Str.outMin + (Str.outMax - Str.outMin) * ...
             (bkgnd + (frgnd - bkgnd) .* ...
-            min(max((x - Str.inMin) / (Str.inMax - Str.inMin), 0), 1) .^ ...
+            clip((x - Str.inMin) / (Str.inMax - Str.inMin)) .^ ...
             exp(Str.logExponent)));
     end
 
@@ -304,7 +304,7 @@ PlotNonlin;
     %ACCUMULATEHIST(im) add im to pixel histogram
         if doHist
             RecalcHist(im);
-            DrawClip;
+            ChangeClip;
             drawnow;
         end
     end
@@ -444,12 +444,11 @@ PlotNonlin;
 %Functions that update plots
 
     function ShowImages
-        delete(imh);
         imin = imr.readFrame(S.frameno);
         if ~ismatrix(imin)
             imin = imin(:, :, 1);
         end
-        imout = S.outClass(normfn(double(imin)));
+        imout = normfn(double(imin));
         if outGrey(pmh.Value)
             imout = imout(:, :, 1);
         end
@@ -459,9 +458,20 @@ PlotNonlin;
         title(ax(2), 'Output', 'FontSize', r.FontSize);
     end
 
+    function ChangeImages
+        imin = imr.readFrame(S.frameno);
+        if ~ismatrix(imin)
+            imin = imin(:, :, 1);
+        end
+        imout = normfn(double(imin));
+        if outGrey(pmh.Value)
+            imout = imout(:, :, 1);
+        end
+        imh(1).CData = imin;
+        imh(2).CData = imout;
+    end
+
     function DrawClip
-        delete(histh)
-        delete(lnh)
         histh = area(ax(3), pixelbins, log(pixelcounts));
         hold(ax(3), 'on');
         xlabel(ax(3), 'Pixel value', 'FontSize', r.FontSize);
@@ -473,13 +483,28 @@ PlotNonlin;
             'ButtonDownFcn', {@ln_callback, 2, 'inMax'}, 'Color', col{2});
     end
 
+    function ChangeClip
+        histh.XData = pixelbins;
+        histh.YData = log(pixelcounts);
+        yl = ylim(ax(3));
+        lnh(1).XData = S.inMin * [1, 1];
+        lnh(1).YData = yl;
+        lnh(2).XData = S.inMax * [1, 1];
+        lnh(2).YData = yl;
+    end
+
     function PlotNonlin
         x = 0:0.02:1;
         y = x .^ exp(S.logExponent);
-        plot(ax(4), x, y, 'LineWidth', r.LineWidth, 'Color', col{3},...
+        lnh(3) = plot(ax(4), x, y, 'LineWidth', r.LineWidth, 'Color', col{3},...
             'ButtonDownFcn', {@ln_callback, 3, 'logExponent'});
         xlabel(ax(4), 'Input', 'FontSize', r.FontSize);
         ylabel(ax(4), 'Output', 'FontSize', r.FontSize);
+    end
+
+    function ChangeNonlin
+        x = lnh(3).XData;
+        lnh(3).YData = x .^ exp(S.logExponent);
     end
 
 %-------------------------------------------------------------------------
@@ -504,7 +529,7 @@ PlotNonlin;
         S.frameno = frameNumber;
         edslh(1).String = num2str(frameNumber);
         slh(1).Value = frameNumber;
-        ShowImages;
+        ChangeImages;
         drawnow;
     end
 
@@ -520,6 +545,7 @@ PlotNonlin;
             MakeRGB(1);
             MakeRGB(2);
         end
+        normfn = CalcNorm(S);
     end
 
     function MakeGrey(which)
