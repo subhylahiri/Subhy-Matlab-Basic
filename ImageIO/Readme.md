@@ -18,6 +18,7 @@ The classes in this folder can be used for input/output of sequences of images, 
 
 ScaleFluorescentImages is a GUI for adjusting contrast and/or changing fore/background colours in mages.
 It is especially useful for displaying fluorescent images on projectors.
+It is not meant to be used in data analysis.
 It takes a subclass of ImageReader and an optional subclass of ImageWriter as inputs.
 
 
