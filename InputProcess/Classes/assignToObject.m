@@ -1,41 +1,35 @@
-function [s,x] = assignToObject(s, x)
-%function [s,x] = assignToObject(s, x)
+function [obj,argcell] = assignToObject(obj, argcell)
+%function [s,argcell] = assignToObject(s, x)
 %
-%if x{i} is a property of s, 
-%s.(x{i}) = x{i+1}
+%if argcell{i} is a property of obj, 
+%obj.(argcell{i}) = x{i+1}
 %
-%removes any parameter, value pairs from x and returns
-%needs to be made member function is there are properties with private set
+%removes any parameter, value pairs from argcell and returns
+%needs to be made member function if there are properties with private set
 %access
 % re-modified by Subhaneil Lahiri
 % modified by marc gershow from pvpmod by
 % (c) U. Egert 1998
 
 %############################################
-% this loop is assigns the parameter/value pairs in x to the calling
-% workspace.
-used = [];
-q = metaclass(s);
-p={q.PropertyList.Name};
-% p=properties(s);
-if ~isempty(x)
+% this loop is assigns the parameter/value pairs in x to the calling object
+keep = true(size(argcell));
+if ~isempty(argcell)
     skipnext = false;
-   for i = 1:size(x,2)
+   for i = 1:size(argcell,2)
        if skipnext
            skipnext = false;
            continue;
        end
-       if (ischar(x{i}) && ismember(x{i},p))         
-          [s.(x{i})] = deal(x{i+1});
-          used = [used i];
+       if (ischar(argcell{i}) && isprop(argcell{i}, obj))         
+          [obj.(argcell{i})] = deal(argcell{i+1});
+          keep(i:i+1) = false;
           skipnext = true;
        end
    end
 end
-if (~isempty(used))
-    used = [used used+1];
-    inds = setdiff(1:length(x), used);
-    x = x(inds);
+argcell = argcell(keep);
+
 end
 
 %############################################
