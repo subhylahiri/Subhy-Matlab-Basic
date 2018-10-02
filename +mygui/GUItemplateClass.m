@@ -89,5 +89,10 @@ classdef GUItemplateClass < handle
         Create(obj)
     end
     
+    methods
+        function obj = GUItemplateClass(varargin)
+            obj.setupListeners();
+        end
+    end
 end
 

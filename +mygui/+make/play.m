@@ -4,7 +4,7 @@ function [slh, pbh, edh] = play(parent, data, varargin)
 %   data: object that carries GUI state (subclass of handle)
 %   varname: name of property of DATA to update.
 %
-%   DATA must have properties {frameno,firstfr,lastfr,opts_pnl,opts_btn}
+%   DATA must have properties {frameno,firstfr,lastfr,play,opts_pnl,opts_btn}
 %   and methods {Play}.
 
 if isempty(parent.Title)
