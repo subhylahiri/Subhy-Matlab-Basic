@@ -1,15 +1,10 @@
-function [ reader ] = makeReader( mainarg, varargin )
-%reader=MAKEREADER(...) make an appropriate image reader object.
-%   input: a numeric array, VideoReader object, or a filename with extension.
-%   output: SingleImage, VideoFileReader, ImageSequence, TiffStackReader or AnimatedGifReader
+function [ writer ] = makeWriter( mainarg, varargin )
+%writer=MAKEWRITER(...) make an appropriate image writer object.
+%   input: a VideoWriter object, or a filename with extension.
+%   output: VideoFileWriter, ImSeqWriter, TiffStackWriter or AnimatedGifWriter
 
-if isnumeric(mainarg)
-    reader = SingleImage(mainarg, varargin{:});
-    return
-end
-
-if isa(mainarg, VideoReader)
-    reader = VideoFileReader(mainarg, varargin{:});
+if isa(mainarg, VideoWriter)
+    writer = VideoFileWriter(mainarg, varargin{:});
     return
 end
 
@@ -28,26 +23,26 @@ ext = strsplit(strargs{find(tf, 1, 'last')}, '.');
 ext = lower(ext{end});
 
 if ismember(ext, {'avi','mj2','mpg','wmv','asf','asx','mp4','m4v','mov','ogg'})
-    reader = VideoFileReader(allargs{:});
+    writer = VideoFileWriter(allargs{:});
     return
 end
 
 if any(contains(strargs, '%'))
-    reader = ImageSequence(allargs{:});
+    writer = ImSeqWriter(allargs{:});
     return
 end
 
 if ismember(ext, {'tif','tiff'})
-    reader = TiffStackReader(allargs{:});
+    writer = TiffStackWriter(allargs{:});
     return
 end
 
 if ismember(ext, {'gif'})
-    reader = AnimatedGifReader(allargs{:});
+    writer = AnimatedGifWriter(allargs{:});
     return
 end
 
-reader = SingleImage(allargs{:});
+writer = ImSeqWriter(allargs{:});
 
 end
 
