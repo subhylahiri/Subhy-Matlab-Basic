@@ -13,35 +13,36 @@ classdef ImageSequence < ImageReader
     
    properties (SetAccess=private)
        % DATA:
-       filepre=''; %prefix of TIFF file names, e.g. 'im_' for 'im_00001.tif'
-       numberformat='%04d';
-       extension='.tif';
+       filepre = ''; %prefix of TIFF file names, e.g. 'im_' for 'im_00001.tif'
+       numberformat = '%04d';
+       extension = '.tif';
    end %properties: not editable
    
    properties 
        % DATA:
-       path=''; %path to files
+       path = ''; %path to files
    end %properties: editable
    
    
    methods 
        function im=readFrame(obj,framenumber)
-           im=imread(obj.getFilename(framenumber));
+           im = imread(obj.getFilename(framenumber));
        end
-   end %methods: private utility functions
+   end
 
-    methods
+    methods%utility functions
         function fname=getFilename(obj,framenumber)
-            fname=[obj.path, obj.filepre, sprintf(obj.numberformat,framenumber), obj.extension];
+            fname = [obj.path, obj.filepre, sprintf(obj.numberformat,framenumber), obj.extension];
         end
-    end
+    end%methods: utility functions
    
     methods (Access=private)%for constructiuon
         %called by constructor
-        copy=CopyProps(original,copy)
-        copy=CopyStruct(strct,copy)
+        copy = CopyProps(original,copy)
+        copy = CopyStruct(strct,copy)
         [s,x] = assignToObject(s, x)
-    end%methods
+        obj = GetPath(obj,doext)
+    end%methods for constructiuon
 
     methods
         %constructor
@@ -49,12 +50,12 @@ classdef ImageSequence < ImageReader
             %
             %First: set up argument list for Superclass constructor
             %
-            args={};
+            args = {};
             fileargs=varargin;
             for i=1:4
-               if nargin>=i && ~isa(varargin{i},'char')
-                   args=varargin(i:end);
-                   fileargs=varargin(1:i-1);
+               if nargin >= i && ~isa(varargin{i},'char')
+                   args = varargin(i:end);
+                   fileargs = varargin(1:i-1);
                    break;
                end %if
             end %for
@@ -64,39 +65,41 @@ classdef ImageSequence < ImageReader
            %
             %Second: call Superclass constructor
             %
-            obj=obj@ImageReader(args{:});
+            obj = obj@ImageReader(args{:});
             %
             % Third: set the images object
             %
             %
             %if we're copying another obj
-            [tempobj,varargin]=extractArgOfType(varargin,'ImageSequence');
+            [tempobj, varargin] = extractArgOfType(varargin, 'ImageSequence');
             if ~isempty(tempobj)
                 obj = CopyProps(tempobj, obj);
             end
             %
             %Extract data from struct:
             %
-            [IMstruct,varargin]=extractArgOfType(varargin,'struct');
+            [IMstruct, varargin] = extractArgOfType(varargin, 'struct');
             if ~isempty(IMstruct)
                 obj = CopyStruct(IMstruct, obj);
             end
             %
             %set values manually:
-            [obj,varargin]=assignToObject(obj,varargin);
+            [obj, varargin] = assignToObject(obj, varargin);
             %
             if ~isempty(varargin)
 %                     error('Unknown inputs');
             end
             if ~isempty(fileargs)
-               obj.filepre=fileargs{1};
-               obj=GetPath(obj);
-               if numel(fileargs)>1
-                   obj.numberformat=fileargs{2};
+               obj.filepre = fileargs{1};
+               doext = true;
+               if numel(fileargs) > 1
+                   obj.numberformat = fileargs{2};
+                   doext = false;
                end %if
-               if numel(fileargs)>2
-                   obj.extension=fileargs{3};
+               if numel(fileargs) > 2
+                   obj.extension = fileargs{3};
                end %if
+               obj=GetPath(obj, doext);
             end %if
             %
         end %constructor

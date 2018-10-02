@@ -30,6 +30,7 @@ classdef TiffStackReader < ImageReader
         copy=CopyProps(original,copy)
         copy=CopyStruct(strct,copy)
         [s,x] = assignToObject(s, x)
+        obj=GetPath(obj)
     end%methods
 
     methods
