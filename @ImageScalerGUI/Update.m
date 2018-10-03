@@ -2,6 +2,7 @@ function Update( obj, src )
 %UPDATE Summary of this function goes here
 %   Detailed explanation goes here
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if isa(src, 'matlab.graphics.chart.primitive.Line')
     if src == obj.line(3)
         if isvector(obj.logExponent)
@@ -16,6 +17,7 @@ if isa(src, 'matlab.graphics.chart.primitive.Line')
     return;
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if isa(src, 'matlab.ui.container.ButtonGroup')
     obj.normfn = obj.CalcNorm();
     obj.ChangeImages;
@@ -23,6 +25,7 @@ if isa(src, 'matlab.ui.container.ButtonGroup')
 end
 
 switch src.Style
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'slider'
         if src == obj.play_sl
             obj.ChangeImages;
@@ -34,17 +37,23 @@ switch src.Style
             obj.ChangeClip;
             %
             if ~isempty(obj.imw) && obj.doWrite
-                obj.imw.writeFrame(obj.img(2).CData, obj.frameno)
+                imout = obj.img(2).CData;
+                if obj.outGrey(obj.outChoice)
+                    imout = imout(:, :, 1);
+                end
+                obj.imw.writeFrame(imout, obj.frameno)
             end
         else
             obj.ChangeNonlin;
             obj.normfn = obj.CalcNorm();
             obj.ChangeImages;
         end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'edit'
         obj.ChangeClip;
         obj.normfn = obj.CalcNorm();
         obj.ChangeImages;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'popupmenu'
         inttype = obj.intypes{obj.outChoice};
         S.outClass = str2func(inttype);
@@ -55,6 +64,11 @@ switch src.Style
             obj.btng(2).SelectedObject = obj.radio(2, str2double(obj.btng(2).SelectedObject.Tag));
             [obj.radio(1,2:7).Enable] = deal('off');
             [obj.radio(2,2:7).Enable] = deal('off');
+            drawnow;
+            mygui.helpers.exectuteCallback(obj.btng(1),...
+                struct('NewValue', obj.btng(1).SelectedObject), 'SelectionChangedFcn');
+            mygui.helpers.exectuteCallback(obj.btng(2),...
+                struct('NewValue', obj.btng(2).SelectedObject), 'SelectionChangedFcn');
         else
             [obj.radio(1,2:7).Enable] = deal('on');
             [obj.radio(2,2:7).Enable] = deal('on');
