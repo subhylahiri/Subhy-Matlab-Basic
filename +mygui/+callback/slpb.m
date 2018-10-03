@@ -4,6 +4,6 @@ function slpb(~, ~, slh, val)
 %   val: value to set slh.Value to
 
 slh.Value = val;
-mygui.callback.sl(slh, 0, slh.Callback{2:end});
+mygui.helpers.exectuteCallback(slh, []);
 
 end

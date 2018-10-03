@@ -15,7 +15,7 @@ args = cell(size(varnames));
 
 for i = 1:siz(1)
     for j = 1:siz(2)
-        pos = mygui.CalcPos([i j], siz, position);
+        pos = mygui.helpers.CalcPos([i j], siz, position);
         extra = cellfun(@(x) x(i,j), varargin, 'UniformOutput', false);
         args{i, j} = [{varnames{i,j}, pos}, extra];
     end
@@ -23,6 +23,11 @@ end
 
 [varargout{:}] = cellfun(@(x) mygui.make.(maker)(preargs{:}, x{:}),...
                     args, 'UniformOutput', false);
+                
+for i=1:nargout
+    output = varargout{i};
+    varargout{i} = reshape([output{:}], siz);
+end
 
 end
 

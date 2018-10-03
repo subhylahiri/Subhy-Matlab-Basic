@@ -3,7 +3,7 @@ function [ writer ] = makeWriter( mainarg, varargin )
 %   input: a VideoWriter object, or a filename with extension.
 %   output: VideoFileWriter, ImSeqWriter, TiffStackWriter or AnimatedGifWriter
 
-if isa(mainarg, VideoWriter)
+if isa(mainarg, 'VideoWriter')
     writer = VideoFileWriter(mainarg, varargin{:});
     return
 end

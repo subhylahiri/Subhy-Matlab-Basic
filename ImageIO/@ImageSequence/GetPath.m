@@ -6,8 +6,8 @@ function [ obj ] = GetPath( obj, doext )
 
 
 cmpts = strsplit(obj.filepre, '\');
-if ~isscalar(cmots)
-    obj.path = [cmpts{1:end-1}];
+if ~isscalar(cmpts)
+    obj.path = [strjoin(cmpts(1:end-1), '/') '/'];
 end
 obj.filepre = cmpts{end};
 

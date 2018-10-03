@@ -1,6 +1,8 @@
-function circDeleteFcn( obj, varargin )
-%CIRCDELETEFCN(obj) Summary of this function goes here
-%   Detailed explanation goes here
+function circDeleteFcn( obj, ~, varargin )
+%CIRCDELETEFCN(obj) delete callback function to remove circular references
+%in its callbacks.
+%   obj: object that has the circular reference in its callbacks.
+%   ... names of callbacks containing circular reference, default: 'Callback'
 
 if isempty(varargin)
     obj.Callback = '';

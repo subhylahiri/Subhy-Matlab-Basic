@@ -8,13 +8,13 @@ if isnumeric(mainarg)
     return
 end
 
-if isa(mainarg, VideoReader)
+if isa(mainarg, 'VideoReader')
     reader = VideoFileReader(mainarg, varargin{:});
     return
 end
 
 allargs = [{mainarg}, varargin];
-charargs = cellfun(ischar, allargs) | cellfun(isstring, allargs);
+charargs = cellfun(@ischar, allargs) | cellfun(@isstring, allargs);
 if ~any(charargs)
     error('Need a string containing an extension to know what to do with this input.');
 end

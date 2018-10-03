@@ -9,14 +9,14 @@ function tgh=toggle(parent, data, varname, position)
 %   DATA must have a method called Update with signature Update(OBJ,SRC)
 
 if iscell(varname)
-    tgh = mygui.make.grid('toggle', {parent, data}, varnames, position);
+    tgh = mygui.make.grid('toggle', {parent, data}, varname, position);
     return;
 end
 
 tgh = uicontrol(parent,'Style', 'togglebutton', data.opts_btn{:},...
    'String', varname, 'Position', position,...
    'Min', false, 'Max', true, 'Value', false,...
-   'DeleteFcn', @mygui.circDeleteFcn,...
-   'Callback', {@tg_callback, data, varname});
+   'DeleteFcn', @mygui.helpers.circDeleteFcn,...
+   'Callback', {@mygui.callback.tog, data, varname});
 
 end%function MakeEditBox

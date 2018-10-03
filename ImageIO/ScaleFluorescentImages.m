@@ -304,9 +304,11 @@ PlotNonlin;
     %ACCUMULATEHIST(im) add im to pixel histogram
         if doHist
             RecalcHist(im);
-            ChangeClip;
-            drawnow;
+        else
+            CalcHist(im);
         end
+        ChangeClip;
+        drawnow;
     end
 
 %-------------------------------------------------------------------------

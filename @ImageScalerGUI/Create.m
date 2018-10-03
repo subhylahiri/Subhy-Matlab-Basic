@@ -39,37 +39,88 @@ obj.panels(7) = uipanel(obj.figure, obj.opts_pnl{:},...
                 'Position', [0.9 0.10 0.1 0.15],...
                 'Title', 'Output');
 %Create axes
-obj.axes(1) = axes('Parent', obj.panels(1), 'OuterPosition', [0 0.5 1 0.5]);%left bottom width height
-obj.axes(2) = axes('Parent', obj.panels(1), 'OuterPosition', [0 0.0 1 0.5]);%left bottom width height
+obj.axes(1) = axes(obj.panels(1), obj.opts_ax{:},...
+    'OuterPosition', [0 0.5 1 0.5]);%left bottom width height
+obj.axes(2) = axes(obj.panels(1), obj.opts_ax{:},...
+    'OuterPosition', [0 0.0 1 0.5]);%left bottom width height
 
-obj.axes(3) = axes('Parent', obj.panels(2), 'OuterPosition', [0 0.2 1 0.8]);%left bottom width height
-obj.axes(4) = axes('Parent', obj.panels(3), 'OuterPosition', [0 0.2 1 0.8]);%left bottom width height
+obj.axes(3) = axes(obj.panels(2), obj.opts_ax{:},...
+    'OuterPosition', [0 0.2 1 0.8]);%left bottom width height
+obj.axes(4) = axes(obj.panels(3), obj.opts_ax{:},...
+    'OuterPosition', [0 0.2 1 0.8]);%left bottom width height
 
-% im = imr.readFrame(imr.firstfr);
-% CalcHist(im);
-% S.inMin = pixelbins(1);
-% S.inMax = pixelbins(end);
-% normfn = CalcNorm(S);
-% MakeSliderPlay(figure1, 1, slpos);
-% MakeEditBox(ph(2), 1, 'inMin');
-% MakeEditBox(ph(2), 2, 'inMax');
-% 
-% MakeSlider(ph(3), 2, 'logExponent', -4, 4, slpos2);
-% 
-% MakeRadio(ph(4), 1, 'clr', 1);
-% MakeRadio(ph(5), 2, 'clr', 8);
-% 
-% pmh = uicontrol(ph(6), 'Style', 'popupmenu', bopts{:},...
-%     'Position', [0 0 1 1],...
-%     'String', outTypes,'CallBack', @pm_callback);
-% 
-% tgh = uicontrol(ph(7),'Style', 'togglebutton', bopts{:},...
-%     'Position', [0 0 1 1],...
-%     'String', 'Write?', 'Min', false, 'Max', true, 'Value', false);
-%     
-% ShowImages
-% DrawClip;
-% PlotNonlin;
+arrayfun(@(x) hold(x, 'on'), obj.axes);
 
+obj.firstfr = obj.imr.firstfr;
+obj.lastfr = obj.imr.lastfr;
+obj.frameno = obj.firstfr;
+
+obj.outMin = double(intmin(func2str(obj.outClass)));
+obj.outMax = double(intmax(func2str(obj.outClass)));
+
+obj.panels(8) = uipanel(obj.figure, obj.opts_pnl{:},...
+    'Position', [0, 0, 1, 0.1], 'Title', 'Frame');
+[obj.play_sl, obj.play_pb, obj.play_ed] = mygui.make.play(obj.panels(8), obj);
+
+[obj.panels(9:10), obj.edit] = mygui.make.editbox(obj.panels(2), obj,...
+    {'inMin', 'inMax'}, [0, 0, 1, 0.2]);
+
+[obj.panels(11), obj.slider] = mygui.make.slider(obj.panels(3), obj,...
+    'logExponent', [0, 0, 1, 0.2], -4, 4);
+
+outColours = num2cell(obj.outColours, 2)';
+outColours = cellfun(@(x) reshape(x, [1 1 3]), outColours, 'UniformOutput', false);
+
+[obj.btng(1), obj.radio(1,1:8)] = mygui.make.radio(obj.panels(4), obj, 'bkgnd', obj.outColourNames, outColours, [1 1]);
+[obj.btng(2), obj.radio(2,1:8)] = mygui.make.radio(obj.panels(5), obj, 'frgnd', obj.outColourNames, outColours, [1 8]);
+[obj.radio(1,1:4).Tag] = deal('1');
+[obj.radio(1,5:8).Tag] = deal('8');
+[obj.radio(2,1:4).Tag] = deal('1');
+[obj.radio(2,5:8).Tag] = deal('8');
+
+obj.pmenu = uicontrol(obj.panels(6), 'Style', 'popupmenu', obj.opts_btn{:},...
+    'Position', [0 0 1 1],'String', obj.outTypes,...
+    'CallBack', {@mygui.callback.pmenu, obj, 'outChoice'});
+
+obj.tog = mygui.make.toggle(obj.panels(7), obj, 'doWrite', [0 0 1 1]);
+obj.tog.String = 'Write?';
+
+imin = obj.imr.readFrame(obj.frameno);
+if ~ismatrix(imin)
+    imin = imin(:, :, 1);
+end
+
+[obj.pixelcounts, obj.pixelbins] = histcounts(imin(:));
+obj.pixelcounts(end+1) = obj.pixelcounts(end);
+obj.inMin = obj.pixelbins(1);
+obj.inMax = obj.pixelbins(end);
+obj.normfn = obj.CalcNorm();
+
+imout = obj.normfn(double(imin));
+if obj.outGrey(obj.outChoice)
+    imout = imout(:, :, 1);
+end
+obj.img(1) = imshow(imin, 'Parent', obj.axes(1));
+obj.img(2) = imshow(imout, 'Parent', obj.axes(2));
+title(obj.axes(1), 'Input');
+title(obj.axes(2), 'Output');
+
+obj.area = area(obj.axes(3), obj.pixelbins, log(obj.pixelcounts));
+hold(obj.axes(3), 'on');
+xlabel(obj.axes(3), 'Pixel value');
+ylabel(obj.axes(3), 'log count');
+yl = ylim(obj.axes(3));
+obj.line(1) = plot(obj.axes(3), obj.inMin * [1, 1], yl, 'LineWidth', obj.LineWidth,...
+    'ButtonDownFcn', {@mygui.callback.line, obj, 'inMin', ''}, 'Color', obj.col{1});
+obj.line(2) = plot(obj.axes(3), obj.inMax * [1, 1], yl, 'LineWidth', obj.LineWidth,...
+    'ButtonDownFcn', {@mygui.callback.line, obj, 'inMax', ''}, 'Color', obj.col{2});
+
+x = 0:0.02:1;
+y = x .^ exp(obj.logExponent);
+obj.line(3) = plot(obj.axes(4), x, y, 'LineWidth', obj.LineWidth, 'Color', obj.col{3},...
+    'ButtonDownFcn', {@mygui.callback.line, obj, 'logExponent', 'logExponent'});
+xlabel(obj.axes(4), 'Input');
+ylabel(obj.axes(4), 'Output');
+    
 end
 

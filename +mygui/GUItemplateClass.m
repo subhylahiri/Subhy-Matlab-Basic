@@ -9,23 +9,22 @@ classdef GUItemplateClass < handle
         panels = matlab.ui.container.Panel;
         btng = matlab.ui.container.ButtonGroup.empty;
         radio = matlab.ui.control.UIControl.empty;
-        editbox = matlab.ui.control.UIControl.empty;
+        edit = matlab.ui.control.UIControl.empty;
+        check = matlab.ui.control.UIControl.empty;
         push = matlab.ui.control.UIControl.empty;
         tog = matlab.ui.control.UIControl.empty;
+        list = matlab.ui.control.UIControl.empty;
+        pmenu = matlab.ui.control.UIControl.empty;
         slider = matlab.ui.control.UIControl.empty;
         slider_ed = matlab.ui.control.UIControl.empty;
         slider_pb = matlab.ui.control.UIControl.empty;
         img = matlab.graphics.primitive.Image.empty;
         line = matlab.graphics.chart.primitive.Line.empty;
         area = matlab.graphics.chart.primitive.Area.empty;
-    end
-
-    properties
-        opts = struct('FontSize', 16, 'BtFontSize', 16, 'LineWidth', 2,...
-            'TitlePosition', 'centertop', 'Units', 'normalized');
+        listeners;
     end
     
-    properties (SetObservable)
+    properties (SetObservable, AbortSet)
         FontSize = 16;
         BtnFontSize = 16;
         LineWidth = 2;
@@ -41,13 +40,14 @@ classdef GUItemplateClass < handle
                 obj.findprop('LineWidth'),...
                 obj.findprop('TitlePosition'),...
                 obj.findprop('Units')];
-            obj.addlistener(props, 'PostSet', @GUItemplateClass.handleEvents);
+            obj.addlistener(props, 'PostSet', @obj.handleEvents);
         end
     end
     
-    methods (Static)
-        function handleEvents(src, event)
-            obj = event.AffectedObject;
+    methods 
+        function handleEvents(obj, src, event)
+            assert(event.AffectedObject == obj);
+%             obj = event.AffectedObject;
             switch src.Name
                 case 'FontSize'
                     [obj.axes.FontSize] = deal(obj.FontSize);
@@ -59,6 +59,8 @@ classdef GUItemplateClass < handle
                     [obj.slider_ed.FontSize] = deal(obj.BtnFontSize);
                     [obj.slider_pb.FontSize] = deal(obj.BtnFontSize);
                     [obj.radio.FontSize] = deal(obj.BtnFontSize);
+                    [obj.pmenu.FontSize] = deal(obj.BtnFontSize);
+                    [obj.list.FontSize] = deal(obj.BtnFontSize);
                 case 'LineWidth'
                     [obj.lines.LineWidth] = deal(obj.LineWidth);
                 case 'TitlePosition'
@@ -69,18 +71,24 @@ classdef GUItemplateClass < handle
     
     properties (Dependent)
         opts_pnl
+        opts_ax
         opts_btn
     end
     
     methods%get dependent properties
         %
         function val = get.opts_pnl(obj)
-            val = {'FontSize', obj.opts.FontSize, 'TitlePosition', obj.TitlePosition,...
+            val = {'FontSize', obj.FontSize, 'TitlePosition', obj.TitlePosition,...
                 'Units', obj.Units};
+        end
+
+        %
+        function val = get.opts_ax(obj)
+            val = {'FontSize', obj.FontSize, 'Units', obj.Units};
         end
         %
         function val = get.opts_btn(obj)
-            val = {'FontSize', obj.opts.BtnFontSize, 'Units', obj.Units};
+            val = {'FontSize', obj.BtnFontSize, 'Units', obj.Units};
         end
     end
     

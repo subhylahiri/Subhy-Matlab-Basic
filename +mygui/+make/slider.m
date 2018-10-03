@@ -1,5 +1,5 @@
 function [ph, slh, edh, pbh] = slider(parent, data, varname, position, minval, maxval)
-%[ph,slh,edh,pbh]=SLIDER(parent,data,varname,minval,maxval,slpos) make slider panel
+%[ph,slh,edh,pbh]=SLIDER(parent,data,varname,position,minval,maxval) make slider panel
 %   parent: parent figure/uipanel
 %   data: object that carries GUI state (subclass of handle)
 %   varname: name of property of DATA to update.
@@ -10,7 +10,7 @@ function [ph, slh, edh, pbh] = slider(parent, data, varname, position, minval, m
 %   DATA must have a method called Update with signature Update(OBJ,SRC)
 
 if iscell(varname)
-    [ph, slh, edh, pbh] = mygui.make.grid('editbox', {parent, data}, varnames,...
+    [ph, slh, edh, pbh] = mygui.make.grid('editbox', {parent, data}, varname,...
         position, minval, maxval);
     return;
 end
@@ -38,7 +38,7 @@ edh = uicontrol(ph, 'Style', 'edit', data.opts_btn{:},...
     'Position', [0.9 0.25 0.1 0.7],...
     'DeleteFcn', @mygui.helpers.circDeleteFcn,...
     'Callback', {@mygui.callback.sled, slh});
-slh.Callback{3} = edh;  %circular references!
+slh.Callback{4} = edh;  %circular references!
 %slider labels
 uicontrol(ph, 'Style', 'text', data.opts_btn{:},...
     'String', num2str(minval),...
