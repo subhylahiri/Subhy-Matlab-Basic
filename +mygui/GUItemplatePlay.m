@@ -14,8 +14,17 @@ classdef GUItemplatePlay < mygui.GUItemplateClass
         play_pb = matlab.ui.control.UIControl.empty;
         play_ed = matlab.ui.control.UIControl.empty;
     end
-    methods (Abstract)
-        Play(obj)
+    methods
+        %
+        function Play(obj)
+            while obj.play && obj.frameno < obj.lastfr
+                obj.play_sl.Value = obj.frameno + 1;
+                mygui.helpers.exectuteCallback(obj.play_sl, []);
+                drawnow;
+            end %while Play
+            obj.play = false;
+            obj.play_pb.String = 'Play';
+        end
     end
     
 end

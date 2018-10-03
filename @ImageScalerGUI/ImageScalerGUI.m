@@ -39,9 +39,6 @@ classdef ImageScalerGUI < mygui.GUItemplatePlay
                 imin = imin(:, :, 1);
             end
             imout = obj.normfn(double(imin));
-            if obj.outGrey(obj.outChoice)
-                imout = imout(:, :, 1);
-            end
             obj.img(1).CData = imin;
             obj.img(2).CData = imout;
         end
@@ -71,19 +68,9 @@ classdef ImageScalerGUI < mygui.GUItemplatePlay
         end
     end
     
-    methods
+    methods%required by ABC
         Update(obj, src)
         Create(obj)
-        %
-        function Play(obj)
-            while obj.play && obj.frameno < obj.lastfr
-                obj.play_sl.Value = obj.frameno + 1;
-                mygui.helpers.exectuteCallback(obj.play_sl, []);
-                drawnow;
-            end %while Play
-            obj.play = false;
-            obj.play_pb.String = 'Play';
-        end
     end
     
     methods (Access=private)%for constructiuon
