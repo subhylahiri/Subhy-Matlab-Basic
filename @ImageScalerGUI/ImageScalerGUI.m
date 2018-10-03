@@ -82,11 +82,11 @@ classdef ImageScalerGUI < mygui.GUItemplatePlay
 
     methods%constructor
         function obj=ImageScalerGUI(varargin)
-            [obj.imr, varargin] = extractArgOfType(varargin, 'ImageReader');
-            [obj.imw, varargin] = extractArgOfType(varargin, 'ImageWriter');
+            [obj.imr, varargin] = extractArgOfType(varargin, 'imageIO.ImageReader');
+            [obj.imw, varargin] = extractArgOfType(varargin, 'imageIO.ImageWriter');
             %
             %if we're copying another obj
-            [tempobj, varargin] = extractArgOfType(varargin, 'ImageSequence');
+            [tempobj, varargin] = extractArgOfType(varargin, 'ImageScalerGUI');
             if ~isempty(tempobj)
                 obj = CopyProps(tempobj, obj);
             end

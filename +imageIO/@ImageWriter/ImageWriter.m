@@ -72,7 +72,7 @@ classdef ImageWriter
                 %default parameters:
                 %
                 %if we're copying another obj
-                [tempobj,varargin]=extractArgOfType(varargin,'ImageWriter');
+                [tempobj,varargin]=extractArgOfType(varargin,'imageIO.ImageWriter');
                 if ~isempty(tempobj)
                     obj = CopyProps(tempobj,obj);
                 end

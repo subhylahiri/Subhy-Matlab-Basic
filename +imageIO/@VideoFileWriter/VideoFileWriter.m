@@ -1,4 +1,4 @@
-classdef VideoFileWriter < ImageWriter
+classdef VideoFileWriter < imageIO.ImageWriter
     %VIDEOFILEWRITER ImageReader for a video file, wrapper of VideoWriter
     % Possible constructors:
     % VID=VIDEOFILEWRITER(OTHELVID) - copy constructor
@@ -37,7 +37,7 @@ classdef VideoFileWriter < ImageWriter
                otherwise
                    if ( isa(varargin{1},'VideoWriter') || isa(varargin{1},'char') )
                        args=varargin(2:end);
-                   elseif isa(varargin{1},'VideoFileWriter')
+                   elseif isa(varargin{1},'imageIO.VideoFileWriter')
                        args=varargin;
                    else
                        error('Unknown inputs');
@@ -56,12 +56,12 @@ classdef VideoFileWriter < ImageWriter
             %
             %Second: call Superclass constructor
             %
-            obj=obj@ImageWriter(args{:});
+            obj=obj@imageIO.ImageWriter(args{:});
             %
             % Third: set the images object
             %
             %if we're copying another obj
-            [tempobj,varargin]=extractArgOfType(varargin,'VideoFileWriter');
+            [tempobj,varargin]=extractArgOfType(varargin,'imageIO.VideoFileWriter');
             if ~isempty(tempobj)
                 obj = CopyProps(tempobj, obj);
             end

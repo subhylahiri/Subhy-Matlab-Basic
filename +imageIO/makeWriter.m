@@ -4,7 +4,7 @@ function [ writer ] = makeWriter( mainarg, varargin )
 %   output: VideoFileWriter, ImSeqWriter, TiffStackWriter or AnimatedGifWriter
 
 if isa(mainarg, 'VideoWriter')
-    writer = VideoFileWriter(mainarg, varargin{:});
+    writer = imageIO.VideoFileWriter(mainarg, varargin{:});
     return
 end
 
@@ -23,26 +23,26 @@ ext = strsplit(strargs{find(tf, 1, 'last')}, '.');
 ext = lower(ext{end});
 
 if ismember(ext, {'avi','mj2','mpg','wmv','asf','asx','mp4','m4v','mov','ogg'})
-    writer = VideoFileWriter(allargs{:});
+    writer = imageIO.VideoFileWriter(allargs{:});
     return
 end
 
 if any(contains(strargs, '%'))
-    writer = ImSeqWriter(allargs{:});
+    writer = imageIO.ImSeqWriter(allargs{:});
     return
 end
 
 if ismember(ext, {'tif','tiff'})
-    writer = TiffStackWriter(allargs{:});
+    writer = imageIO.TiffStackWriter(allargs{:});
     return
 end
 
 if ismember(ext, {'gif'})
-    writer = AnimatedGifWriter(allargs{:});
+    writer = imageIO.AnimatedGifWriter(allargs{:});
     return
 end
 
-writer = ImSeqWriter(allargs{:});
+writer = imageIO.ImSeqWriter(allargs{:});
 
 end
 

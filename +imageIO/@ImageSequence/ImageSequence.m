@@ -1,4 +1,4 @@
-classdef ImageSequence < ImageReader
+classdef ImageSequence < imageIO.ImageReader
     %IMAGESEQUENCE ImageReader for a sequence of image files
     % Possible constructors:
     % IMSQ=IMAGESEQUENCE(OTHERIMSQ) - copy constructor 
@@ -65,13 +65,13 @@ classdef ImageSequence < ImageReader
            %
             %Second: call Superclass constructor
             %
-            obj = obj@ImageReader(args{:});
+            obj = obj@imageIO.ImageReader(args{:});
             %
             % Third: set the images object
             %
             %
             %if we're copying another obj
-            [tempobj, varargin] = extractArgOfType(varargin, 'ImageSequence');
+            [tempobj, varargin] = extractArgOfType(varargin, 'imageIO.ImageSequence');
             if ~isempty(tempobj)
                 obj = CopyProps(tempobj, obj);
             end

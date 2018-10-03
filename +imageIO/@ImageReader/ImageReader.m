@@ -77,7 +77,7 @@ classdef ImageReader
                 %default parameters:
                 %
                 %if we're copying another obj
-                [tempobj,varargin]=extractArgOfType(varargin,'ImageReader');
+                [tempobj,varargin]=extractArgOfType(varargin,'imageIO.ImageReader');
                 if ~isempty(tempobj)
                     irobj = CopyProps(tempobj,irobj);
                 end

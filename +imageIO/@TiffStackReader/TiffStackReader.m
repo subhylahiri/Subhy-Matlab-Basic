@@ -1,4 +1,4 @@
-classdef TiffStackReader < ImageReader
+classdef TiffStackReader < imageIO.ImageReader
     %TIFFSTACKREADER ImageReader for a TIFF stack (or animated GIF)
     % Possible constructors:
     % TSTK=TIFFSTACKREADER(OTHERTSTK) - copy constructor 
@@ -45,7 +45,7 @@ classdef TiffStackReader < ImageReader
                otherwise
                    if isa(varargin{1},'char')
                        args=varargin(2:end);
-                   elseif isa(varargin{1},'TiffStackReader')
+                   elseif isa(varargin{1},'imageIO.TiffStackReader')
                        args=varargin;
                    else
                        error('Unknown inputs');
@@ -55,7 +55,7 @@ classdef TiffStackReader < ImageReader
             %find number of frames, if neccessary
             %
             if isempty(args) ...
-                   || ( numel(args)==1 && ~isa(args{1},'TiffStackReader') ) ...
+                   || ( numel(args)==1 && ~isa(args{1},'imageIO.TiffStackReader') ) ...
                    || ( numel(args)>1 && ~( isa(args{1},'double') && isa(args{2},'double') ) )
                if exist(varargin{1},'file')
                    args=[{1,numel(imfinfo(varargin{1}))},args];
@@ -66,12 +66,12 @@ classdef TiffStackReader < ImageReader
             %
             %Second: call Superclass constructor
             %
-            obj=obj@ImageReader(args{:});
+            obj=obj@imageIO.ImageReader(args{:});
             %
             % Third: set the images object
             %
             %if we're copying another obj
-            [tempobj,varargin]=extractArgOfType(varargin,'TiffStackReader');
+            [tempobj,varargin]=extractArgOfType(varargin,'imageIO.TiffStackReader');
             if ~isempty(tempobj)
                 obj = CopyProps(tempobj, obj);
             end

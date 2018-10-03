@@ -23,7 +23,7 @@ p.parse(varargin{:});
 r = p.Results;
 
 if isnumeric(imr)
-    imr = SingleImage(imr);
+    imr = imageIO.SingleImage(imr);
 end
 
 %Initialise data (put them in a global struct)

@@ -1,4 +1,4 @@
-classdef ImSeqWriter < ImageSequence & ImageWriter
+classdef ImSeqWriter < imageIO.ImageSequence & imageIO.ImageWriter
     %ImSeqWriter writing a sequence of image files
     % Possible constructors:
     % IMW=IMSEQWRITER(IMR) get parameters from ImageSequence
@@ -43,7 +43,7 @@ classdef ImSeqWriter < ImageSequence & ImageWriter
 %            if ~isa(varargin{1},'ImageSequence');
 %                varargin=[varargin, {1,1}];
 %            end %if
-           obj=obj@ImageSequence(varargin{:});
+           obj=obj@imageIO.ImageSequence(varargin{:});
            %
            % Third: set the images object
            %

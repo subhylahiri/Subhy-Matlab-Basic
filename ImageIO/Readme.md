@@ -14,3 +14,17 @@ The classes in this folder can be used for input/output of sequences of images, 
 * SingleImage is for dealing with a single image.
 * FigSeqPrinter uses print, rather than imwrite, so it can output vector images.
 
+# Scaling images
+
+ScaleFluorescentImages is a GUI for adjusting contrast and/or changing fore/background colours in mages.
+It is especially useful for displaying fluorescent images on projectors.
+It is not meant to be used in data analysis.
+It takes a subclass of ImageReader and an optional subclass of ImageWriter as inputs.
+
+
+
+
+
+
+
+

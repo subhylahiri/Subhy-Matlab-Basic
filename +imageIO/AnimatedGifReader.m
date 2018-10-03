@@ -1,4 +1,4 @@
-classdef AnimatedGifReader < TiffStackReader
+classdef AnimatedGifReader < imageIO.TiffStackReader
     %ANIMATEDGIFREADER ImageReader for an animated GIF (or TIFF stack)
     %It is an alias for TIFFSTACKREADER
     % Possible constructors:
@@ -17,7 +17,7 @@ classdef AnimatedGifReader < TiffStackReader
             %
             %Second: call Superclass constructor
             %
-            obj=obj@TiffStackReader(varargin{:});
+            obj=obj@imageIO.TiffStackReader(varargin{:});
             %
             % Third: set the images object
             %

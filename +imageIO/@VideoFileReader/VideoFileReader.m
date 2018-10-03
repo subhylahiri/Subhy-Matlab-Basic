@@ -1,4 +1,4 @@
-classdef VideoFileReader < ImageReader
+classdef VideoFileReader < imageIO.ImageReader
     %VIDEOFILEREADER ImageReader for a video file, wrapper of VideoReader
     % Possible constructors:
     % VID=VIDEOFILEREADER(OTHELVID) - copy constructor
@@ -43,7 +43,7 @@ classdef VideoFileReader < ImageReader
                otherwise
                    if ( isa(varargin{1},'VideoReader') || isa(varargin{1},'char') )
                        args=varargin(2:end);
-                   elseif isa(varargin{1},'VideoFileReader')
+                   elseif isa(varargin{1},'imageIO.VideoFileReader')
                        args=varargin;
                    else
                        error('Unknown inputs');
@@ -60,19 +60,19 @@ classdef VideoFileReader < ImageReader
                 tempreaderobj=struct('NumberOfFrames',1);
             end %if
             if isempty(args) ...
-                   || ( numel(args)==1 && ~isa(args{1},'VideoFileReader') ) ...
+                   || ( numel(args)==1 && ~isa(args{1},'imageIO.VideoFileReader') ) ...
                    || ( numel(args)>1 && ~( isa(args{1},'double') && isa(args{2},'double') ) )
                args=[{1,tempreaderobj.NumberOfFrames},args];
             end %if
             %
             %Second: call Superclass constructor
             %
-            obj=obj@ImageReader(args{:});
+            obj=obj@imageIO.ImageReader(args{:});
             %
             % Third: set the images object
             %
             %if we're copying another obj
-            [tempobj,varargin]=extractArgOfType(varargin,'VideoFileReader');
+            [tempobj,varargin]=extractArgOfType(varargin,'imageIO.VideoFileReader');
             if ~isempty(tempobj)
                 obj = CopyProps(tempobj, obj);
             end

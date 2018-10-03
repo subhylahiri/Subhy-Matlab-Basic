@@ -1,4 +1,4 @@
-classdef TiffStackWriter < TiffStackReader & ImageWriter
+classdef TiffStackWriter < imageIO.TiffStackReader & imageIO.ImageWriter
     %TIFFSTACKWRITER writing a sequence of images to a TIFF stack
     %NOTE: this class ignores frame numbers, assumes frames are sequential.
     %It will not delete any frames that the TIFF file already contains.
@@ -30,7 +30,7 @@ classdef TiffStackWriter < TiffStackReader & ImageWriter
            %
            %Second: call Superclass constructor
            %
-           obj=obj@TiffStackReader(varargin{:});
+           obj=obj@imageIO.TiffStackReader(varargin{:});
            %
            % Third: set the images object
            %

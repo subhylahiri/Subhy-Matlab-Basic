@@ -1,4 +1,4 @@
-classdef SingleImage < ImageReader
+classdef SingleImage < imageIO.ImageReader
     %SINGLEIMAGE Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -20,7 +20,7 @@ classdef SingleImage < ImageReader
             %
             %Second: call Superclass constructor
             %
-            obj=obj@ImageReader(1,1);
+            obj=obj@imageIO.ImageReader(1,1);
             %
             % Third: set the images object
             %

@@ -1,4 +1,4 @@
-classdef FigSeqPrinter < ImSeqWriter
+classdef FigSeqPrinter < imageIO.ImSeqWriter
     %FIGSEQPRINTER print a sequence of figures (vector formats)
     %   Detailed explanation goes here
     
@@ -26,7 +26,7 @@ classdef FigSeqPrinter < ImSeqWriter
 %            if ~isa(varargin{1},'ImageSequence');
 %                varargin=[varargin, {1,1}];
 %            end %if
-           obj=obj@ImSeqWriter(varargin{:});
+           obj=obj@imageIO.ImSeqWriter(varargin{:});
            %
            % Third: set the images object
            %

@@ -1,4 +1,4 @@
-classdef AnimatedGifWriter < TiffStackWriter
+classdef AnimatedGifWriter < imageIO.TiffStackWriter
     %ANIMATEDGIFWRITER writing a sequence of images to an animated GIF
     %NOTE: this class ignores frame numbers, except the first, and assumes
     %frames are sequential. 
@@ -47,7 +47,7 @@ classdef AnimatedGifWriter < TiffStackWriter
            %
            %Second: call Superclass constructor
            %
-           obj = obj@TiffStackWriter(varargin{:});
+           obj = obj@imageIO.TiffStackWriter(varargin{:});
            %
            % Third: set the images object
            %
