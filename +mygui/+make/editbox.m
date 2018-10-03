@@ -5,6 +5,7 @@ function [ph, edh] = editbox(parent, data, varname, position)
 %   varname: name of property of DATA to update.
 %   position [left bottom width height]
 %
+%   Makes its own panel.
 %   DATA must have properties {opts_pnl, opts_btn}
 %   DATA must have a method called Update with signature Update(OBJ,SRC)
 

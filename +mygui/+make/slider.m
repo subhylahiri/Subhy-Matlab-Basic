@@ -6,6 +6,7 @@ function [ph, slh, edh, pbh] = slider(parent, data, varname, position, minval, m
 %   position [left bottom width height]
 %   minval, maxval: range of DATA.VARNAME
 %
+%   Makes its own panel.
 %   DATA must have properties {opts_pnl, opts_btn}
 %   DATA must have a method called Update with signature Update(OBJ,SRC)
 
