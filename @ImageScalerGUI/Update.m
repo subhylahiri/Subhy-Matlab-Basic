@@ -65,10 +65,8 @@ switch src.Style
             [obj.radio(1,2:7).Enable] = deal('off');
             [obj.radio(2,2:7).Enable] = deal('off');
             drawnow;
-            mygui.helpers.exectuteCallback(obj.btng(1),...
-                struct('NewValue', obj.btng(1).SelectedObject), 'SelectionChangedFcn');
-            mygui.helpers.exectuteCallback(obj.btng(2),...
-                struct('NewValue', obj.btng(2).SelectedObject), 'SelectionChangedFcn');
+            mygui.helpers.exectuteCallback(obj.btng(1), [], 'SelectionChangedFcn');
+            mygui.helpers.exectuteCallback(obj.btng(2), [], 'SelectionChangedFcn');
         else
             [obj.radio(1,2:7).Enable] = deal('on');
             [obj.radio(2,2:7).Enable] = deal('on');
