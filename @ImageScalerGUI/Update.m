@@ -1,6 +1,6 @@
 function Update( obj, src )
-%UPDATE Summary of this function goes here
-%   Detailed explanation goes here
+%UPDATE(obj,src) Update the GUI display after changing values of variables.
+%   src = handle of uicontrol that caused the update.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if isa(src, 'matlab.graphics.chart.primitive.Line')
@@ -24,8 +24,8 @@ if isa(src, 'matlab.ui.container.ButtonGroup')
     return;
 end
 
-switch src.Style
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+switch src.Style
     case 'slider'
         if src == obj.play_sl
             obj.ChangeImages;

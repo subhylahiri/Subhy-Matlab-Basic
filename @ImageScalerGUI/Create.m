@@ -1,6 +1,7 @@
 function Create( obj )
-%CREATE Summary of this function goes here
-%   Detailed explanation goes here
+%CREATE(obj) Create a figure & all controls for GUI
+%   This method will be called by the constructor. If you accidentally
+%   close the GUI window, you can get it back by calling this method.
 
 if ~isempty(obj.figure) && obj.figure.isvalid
     return;
